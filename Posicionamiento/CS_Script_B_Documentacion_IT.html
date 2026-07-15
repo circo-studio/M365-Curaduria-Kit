@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relevamiento de documentos M365 — Documentación técnica para IT · Circo Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:       #0F1A24;
+  --ink-2:     #2A3D50;
+  --ink-3:     #4A6282;
+  --ink-4:     #8BA0B8;
+  --paper:     #F8F7F4;
+  --paper-2:   #EEECEA;
+  --paper-3:   #E4E0DA;
+  --line:      #D8D4CE;
+  --line-2:    #C4BFBA;
+  --ok:        #1A5C4E;
+  --ok-bg:     #EBF5F2;
+  --ok-line:   #A8D5C8;
+  --warn:      #7A3A00;
+  --warn-bg:   #FFF4EB;
+  --warn-line: #F0C898;
+  --alert:     #6B1A1A;
+  --alert-bg:  #FFF0F0;
+  --alert-line:#E8B4B4;
+  --a-color:   #1A3A7A;  /* escenario A — usuario cliente */
+  --a-bg:      #EEF3FF;
+  --a-line:    #B8CCEE;
+  --b-color:   #3A1A6A;  /* escenario B — Circo Studio */
+  --b-bg:      #F3EEFF;
+  --b-line:    #C8B0EE;
+  --code-bg:   #1A2430;
+  --code-text: #C8D8E8;
+  --code-key:  #7EC8E8;
+  --code-str:  #98D8A8;
+  --code-cmt:  #506070;
+  --code-val:  #F8C880;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.65}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--ink);padding:0 2.5rem;height:48px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:1.5rem}
+.topbar-id{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.topbar-title{font-family:'DM Mono',monospace;font-size:.72rem;font-weight:500;color:rgba(255,255,255,.82)}
+.topbar-right{font-family:'DM Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.25);letter-spacing:.08em}
+
+/* ── LAYOUT ── */
+.wrap{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 48px)}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--paper-2);border-right:1px solid var(--line);padding:2rem 0;position:sticky;top:48px;height:calc(100vh - 48px);overflow-y:auto}
+.sb-section{margin-bottom:.5rem}
+.sb-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);padding:0 1.25rem .5rem}
+.sb-link{display:flex;align-items:center;gap:.6rem;padding:.45rem 1.25rem;font-size:.82rem;color:var(--ink-3);text-decoration:none;border-left:2px solid transparent;transition:all .12s}
+.sb-link:hover{color:var(--ink);background:var(--paper-3);border-left-color:var(--line-2)}
+.sb-link.active{color:var(--ok);font-weight:500;border-left-color:var(--ok);background:var(--ok-bg)}
+.sb-num{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ink-4);min-width:20px}
+.sb-divider{height:1px;background:var(--line);margin:.75rem 1.25rem}
+
+/* ── INDICADOR DE ESCENARIO EN SIDEBAR ── */
+.sb-scenario{margin:.75rem 1.25rem;padding:.5rem .75rem;border-radius:3px;font-family:'DM Mono',monospace;font-size:.62rem;border:1px solid var(--line);color:var(--ink-4);text-align:center;display:none}
+.sb-scenario.visible{display:block}
+.sb-scenario.mode-a{background:var(--a-bg);border-color:var(--a-line);color:var(--a-color)}
+.sb-scenario.mode-b{background:var(--b-bg);border-color:var(--b-line);color:var(--b-color)}
+
+/* ── MAIN ── */
+.main{padding:3rem 4rem 6rem;max-width:860px}
+
+/* ── SELECTOR DE ESCENARIO ── */
+.selector-wrap{margin-bottom:3rem;padding-bottom:2.5rem;border-bottom:1px solid var(--line)}
+.selector-eyebrow{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem}
+.selector-eyebrow::before{content:'';width:1.5rem;height:1px;background:var(--line-2)}
+.selector-question{font-size:1.1rem;font-weight:600;color:var(--ink);margin-bottom:1.5rem}
+.selector-options{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.selector-btn{padding:1.5rem;border:1px solid var(--line);background:var(--paper);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all .15s;position:relative}
+.selector-btn:hover{border-color:var(--line-2);background:var(--paper-2)}
+.selector-btn.selected-a{border-color:var(--a-color);background:var(--a-bg)}
+.selector-btn.selected-b{border-color:var(--b-color);background:var(--b-bg)}
+.selector-btn::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .15s}
+.selector-btn.selected-a::before{background:var(--a-color);opacity:1}
+.selector-btn.selected-b::before{background:var(--b-color);opacity:1}
+.btn-tag{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.6rem}
+.selector-btn.selected-a .btn-tag{color:var(--a-color)}
+.selector-btn.selected-b .btn-tag{color:var(--b-color)}
+.selector-btn:not(.selected-a):not(.selected-b) .btn-tag{color:var(--ink-4)}
+.btn-title{font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:.35rem}
+.btn-desc{font-size:.82rem;color:var(--ink-3);line-height:1.55}
+
+/* ── ESTADO INICIAL — mostrar aviso ── */
+.select-prompt{padding:2rem;border:1px dashed var(--line);text-align:center;color:var(--ink-4);font-size:.88rem;margin-top:1rem}
+.select-prompt strong{display:block;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;color:var(--ink-3)}
+
+/* ── DOC HEADER ── */
+.doc-header{margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid var(--line)}
+.doc-eyebrow{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.doc-eyebrow::before{content:'';width:1.5rem;height:1px;background:var(--line-2)}
+.doc-header h1{font-size:1.6rem;font-weight:600;color:var(--ink);line-height:1.2;margin-bottom:1rem}
+.doc-header p{font-size:.93rem;color:var(--ink-3);line-height:1.72;max-width:620px}
+.doc-meta{display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap}
+.meta-item{}
+.meta-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);margin-bottom:.2rem}
+.meta-val{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--ink-2);font-weight:500}
+
+/* ── CONTENIDO CONDICIONAL ── */
+.content-wrap{display:none}
+.content-wrap.visible{display:block}
+
+/* ── ETIQUETA DE ESCENARIO en secciones ── */
+.scenario-tag{display:inline-flex;align-items:center;gap:.4rem;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .65rem;border-radius:2px;margin-bottom:1rem;border:1px solid}
+.tag-a{background:var(--a-bg);color:var(--a-color);border-color:var(--a-line)}
+.tag-b{background:var(--b-bg);color:var(--b-color);border-color:var(--b-line)}
+
+/* ── SECCIONES ── */
+.section{margin-bottom:3rem}
+.section-header{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
+.section-num{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--ink-4);min-width:24px}
+.section-title{font-size:1.05rem;font-weight:600;color:var(--ink)}
+.section-badge{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .6rem;border-radius:2px;margin-left:auto}
+.badge-ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
+.badge-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
+.badge-alert{background:var(--alert-bg);color:var(--alert);border:1px solid var(--alert-line)}
+.badge-info{background:var(--paper-3);color:var(--ink-3);border:1px solid var(--line)}
+.section p{font-size:.93rem;color:var(--ink-2);line-height:1.72;margin-bottom:1rem}
+.section p:last-child{margin-bottom:0}
+.section p strong{color:var(--ink);font-weight:600}
+
+/* ── TABLA ── */
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:1rem 0}
+.data-table th{text-align:left;font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4);padding:.5rem .75rem;border-bottom:1px solid var(--line);background:var(--paper-2)}
+.data-table td{padding:.65rem .75rem;border-bottom:1px solid var(--line);vertical-align:top}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--paper-2)}
+.td-mono{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--ink);font-weight:500}
+.td-sm{font-size:.82rem;color:var(--ink-3)}
+.perm-level{font-family:'DM Mono',monospace;font-size:.62rem;padding:.15rem .55rem;border-radius:2px;white-space:nowrap}
+.level-read{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
+.level-admin{background:var(--alert-bg);color:var(--alert);border:1px solid var(--alert-line)}
+.level-deleg{background:var(--a-bg);color:var(--a-color);border:1px solid var(--a-line)}
+
+/* ── FLUJO ── */
+.flow{display:flex;flex-direction:column}
+.flow-step{display:grid;grid-template-columns:36px 1fr;gap:.75rem;padding:1rem 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.flow-step:last-child{border-bottom:none}
+.flow-dot{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--paper-2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.65rem;color:var(--ink-4);flex-shrink:0;margin-top:2px}
+.flow-title{font-weight:600;font-size:.9rem;color:var(--ink);margin-bottom:.3rem}
+.flow-body{font-size:.85rem;color:var(--ink-3);line-height:1.65}
+.flow-body strong{color:var(--ink-2);font-weight:600}
+.flow-detail{margin-top:.6rem;background:var(--paper-2);border:1px solid var(--line);padding:.65rem .85rem;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--ink-3);line-height:1.8}
+.flow-detail .k{color:var(--ok)}
+.flow-detail .v{color:var(--ink-2)}
+
+/* ── CÓDIGO ── */
+.code-block{background:var(--code-bg);border-radius:4px;overflow:hidden;margin:1rem 0}
+.code-header{display:flex;justify-content:space-between;align-items:center;padding:.5rem 1rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.code-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.code-copy{font-family:'DM Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.3);background:none;border:1px solid rgba(255,255,255,.1);padding:.15rem .6rem;cursor:pointer;border-radius:2px;transition:all .15s}
+.code-copy:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3)}
+.code-body{padding:1rem 1.25rem;font-family:'DM Mono',monospace;font-size:.78rem;color:var(--code-text);line-height:1.9;overflow-x:auto;white-space:pre}
+.code-body .k{color:var(--code-key)}
+.code-body .s{color:var(--code-str)}
+.code-body .c{color:var(--code-cmt);font-style:italic}
+.code-body .v{color:var(--code-val)}
+.code-body .p{color:#B8A8F8}
+
+/* ── CALLOUTS ── */
+.callout{padding:.85rem 1rem;border-left:2px solid;border-radius:0 3px 3px 0;margin:1rem 0;font-size:.87rem;line-height:1.65}
+.callout-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.35rem;display:block;font-weight:600}
+.callout p{font-size:.87rem;color:var(--ink-2);margin-bottom:.4rem}
+.callout p:last-child{margin-bottom:0}
+.callout strong{color:var(--ink);font-weight:600}
+.callout.ok{background:var(--ok-bg);border-color:var(--ok)}.callout.ok .callout-label{color:var(--ok)}
+.callout.warn{background:var(--warn-bg);border-color:var(--warn)}.callout.warn .callout-label{color:var(--warn)}
+.callout.alert{background:var(--alert-bg);border-color:var(--alert)}.callout.alert .callout-label{color:var(--alert)}
+.callout.info{background:var(--paper-2);border-color:var(--line-2)}.callout.info .callout-label{color:var(--ink-3)}
+.callout.ca{background:var(--a-bg);border-color:var(--a-color)}.callout.ca .callout-label{color:var(--a-color)}
+.callout.cb{background:var(--b-bg);border-color:var(--b-color)}.callout.cb .callout-label{color:var(--b-color)}
+
+/* ── DIAGRAMA ── */
+.diagram{border:1px solid var(--line);border-radius:3px;overflow:hidden;margin:1rem 0}
+.diagram-title{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);padding:.6rem 1rem;border-bottom:1px solid var(--line);background:var(--paper-2)}
+.diagram-body{padding:1.5rem}
+.diag-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem}
+.diag-row:last-child{margin-bottom:0}
+.diag-box{font-family:'DM Mono',monospace;font-size:.72rem;padding:.35rem .75rem;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);white-space:nowrap;min-width:120px;text-align:center}
+.diag-box.spo{background:var(--ok-bg);border-color:var(--ok-line);color:var(--ok)}
+.diag-box.local{background:var(--paper-3);border-color:var(--line-2);color:var(--ink)}
+.diag-box.mem{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn)}
+.diag-arrow{font-size:.8rem;color:var(--ink-4);flex-shrink:0}
+
+/* ── ESTADOS ── */
+.state-code{font-family:'DM Mono',monospace;font-size:.72rem;font-weight:500}
+.state-ok{color:var(--ok)}.state-warn{color:var(--warn)}.state-alert{color:var(--alert)}.state-info{color:var(--ink-3)}
+
+/* ── ARCHIVOS ── */
+.files-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:3px;overflow:hidden;margin:1rem 0}
+.file-row{display:grid;grid-template-columns:2fr 1fr 2fr;gap:1rem;padding:.75rem 1rem;border-bottom:1px solid var(--line);align-items:center}
+.file-row:last-child{border-bottom:none}
+.file-row:hover{background:var(--paper-2)}
+.file-name{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--ink);font-weight:500}
+.file-type{font-family:'DM Mono',monospace;font-size:.6rem;padding:.12rem .5rem;border-radius:2px;text-align:center;white-space:nowrap}
+.ft-csv{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
+.ft-txt{background:var(--paper-3);color:var(--ink-3);border:1px solid var(--line)}
+.file-desc{font-size:.8rem;color:var(--ink-3)}
+
+/* ── FOOTER ── */
+.doc-footer{border-top:1px solid var(--line);padding:1.25rem 4rem;display:flex;justify-content:space-between;align-items:center;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--ink-4)}
+.doc-footer strong{color:var(--ink-3);font-weight:500}
+.doc-footer a{color:var(--ink-4);text-decoration:none}
+.doc-footer a:hover{color:var(--ink-2)}
+
+@media(max-width:860px){
+  .wrap{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{padding:2rem 1.5rem 4rem}
+  .selector-options{grid-template-columns:1fr}
+  .file-row{grid-template-columns:1fr;gap:.3rem}
+  .doc-footer{padding-left:1.5rem;padding-right:1.5rem;flex-direction:column;gap:.5rem;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-id">Circo Studio · Kit M365 Curaduría</span>
+    <span class="topbar-title">Script_B_Masivo.ps1 — Documentación técnica para IT</span>
+  </div>
+  <span class="topbar-right">PnP.PowerShell 2.x</span>
+</div>
+
+<div class="wrap">
+
+  <nav class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Este documento</div>
+      <a href="#intro" class="sb-link active"><span class="sb-num">00</span>Qué hace este script</a>
+    </div>
+    <div id="sb-indicator" class="sb-scenario">— elegir escenario —</div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-label">Acceso y seguridad</div>
+      <a href="#prereqs" class="sb-link"><span class="sb-num">01</span>Prerequisitos</a>
+      <a href="#app-reg" class="sb-link"><span class="sb-num">02</span>App Registration</a>
+      <a href="#permisos" class="sb-link"><span class="sb-num">03</span>Permisos requeridos</a>
+      <a href="#acceso" class="sb-link"><span class="sb-num">04</span>Qué toca y qué no</a>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-label">Funcionamiento</div>
+      <a href="#flujo" class="sb-link"><span class="sb-num">05</span>Flujo de ejecución</a>
+      <a href="#paginado" class="sb-link"><span class="sb-num">06</span>Paginado y memoria</a>
+      <a href="#checkpoint" class="sb-link"><span class="sb-num">07</span>Checkpoint e idempotencia</a>
+      <a href="#estados" class="sb-link"><span class="sb-num">08</span>Estados por sitio</a>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-label">Salida</div>
+      <a href="#archivos" class="sb-link"><span class="sb-num">09</span>Archivos generados</a>
+      <a href="#columnas" class="sb-link"><span class="sb-num">10</span>Columnas del CSV</a>
+      <a href="#auditoria" class="sb-link"><span class="sb-num">11</span>Auditoría</a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- ENCABEZADO FIJO -->
+    <div class="doc-header" id="intro">
+      <div class="doc-eyebrow">Documentación técnica · Para el área de IT del cliente</div>
+      <h1>Script_B_Masivo.ps1<br>Relevamiento de documentos en SharePoint Online</h1>
+      <p>
+        Este documento describe qué hace el script, qué accesos necesita,
+        qué toca en el tenant y cómo funciona internamente.
+        El contenido varía según quién ejecuta el script — elegir el escenario para ver la información relevante.
+      </p>
+      <div class="doc-meta">
+        <div class="meta-item"><div class="meta-label">Módulo</div><div class="meta-val">PnP.PowerShell 2.x</div></div>
+        <div class="meta-item"><div class="meta-label">Operación</div><div class="meta-val">Solo lectura</div></div>
+        <div class="meta-item"><div class="meta-label">Duración</div><div class="meta-val">2–8 horas según tenant</div></div>
+      </div>
+    </div>
+
+    <!-- SELECTOR -->
+    <div class="selector-wrap">
+      <div class="selector-eyebrow">Escenario de ejecución</div>
+      <div class="selector-question">¿Quién va a ejecutar este script?</div>
+      <div class="selector-options">
+        <button class="selector-btn" id="btn-a" onclick="setScenario('a')">
+          <div class="btn-tag">Escenario A</div>
+          <div class="btn-title">Un usuario del cliente</div>
+          <div class="btn-desc">El script lo corre alguien del equipo IT o un administrador del cliente desde su propia máquina, con su propia cuenta del tenant.</div>
+        </button>
+        <button class="selector-btn" id="btn-b" onclick="setScenario('b')">
+          <div class="btn-tag">Escenario B</div>
+          <div class="btn-title">Circo Studio</div>
+          <div class="btn-desc">El script lo corre un consultor de Circo Studio desde su máquina, conectándose al tenant del cliente con una cuenta B2B guest.</div>
+        </button>
+      </div>
+      <div class="select-prompt" id="select-prompt">
+        <strong>Seleccionar escenario arriba</strong>
+        El contenido de este documento cambia según quién ejecuta el script.
+      </div>
+    </div>
+
+    <!-- ====================================================
+         CONTENIDO ESCENARIO A — Usuario del cliente
+    ===================================================== -->
+    <div class="content-wrap" id="content-a">
+
+      <div class="section" id="prereqs">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <span class="section-title">Prerequisitos</span>
+          <span class="section-badge badge-warn">Requiere acción de IT</span>
+        </div>
+        <div class="scenario-tag tag-a">Escenario A · Usuario del cliente</div>
+        <p>El usuario que va a ejecutar el script necesita cumplir dos condiciones antes de correrlo:</p>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-dot">01</div>
+            <div class="flow-content">
+              <div class="flow-title">Registrar la App Registration en Entra ID del propio tenant</div>
+              <div class="flow-body">Se crea una aplicación en Entra ID con permisos <strong>delegados</strong> — es decir, la app actúa en nombre del usuario que se autentica, con el alcance de permisos de ese usuario. Si el usuario no tiene acceso a un sitio, el script tampoco lo tendrá.</div>
+              <div class="flow-detail">
+                <span class="k">Entra ID</span> → App registrations → New registration<br>
+                <span class="k">Nombre sugerido:</span> <span class="v">CuraduriaM365-ReadOnly</span><br>
+                <span class="k">Tipo de cuenta:</span> <span class="v">Single tenant</span><br>
+                <span class="k">Redirect URI:</span> <span class="v">https://login.microsoftonline.com/common/oauth2/nativeclient</span><br>
+                <span class="k">Tipo de permisos:</span> <span class="v">Delegated (en nombre del usuario)</span>
+              </div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">02</div>
+            <div class="flow-content">
+              <div class="flow-title">El usuario debe tener acceso a los sitios a relevar</div>
+              <div class="flow-body">Con permisos delegados, el script hereda el nivel de acceso del usuario autenticado. Para leer todas las bibliotecas de un sitio sin restricciones, <strong>el usuario necesita ser Site Collection Administrator o tener acceso de lectura total en cada sitio GR- marcado para relevar.</strong></div>
+              <div class="flow-detail">
+                <span class="k">Opción 1:</span> <span class="v">Asignar rol SharePoint Administrator al usuario (acceso a todos los sitios)</span><br>
+                <span class="k">Opción 2:</span> <span class="v">Asignar SCA en cada sitio GR- individualmente (más granular)</span><br>
+                <span class="k">Opción 3:</span> <span class="v">Usar Script A AsignarOwner para asignar el SCA en lote sobre los sitios del inventario</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="app-reg">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <span class="section-title">App Registration — permisos delegados</span>
+          <span class="section-badge badge-info">Entra ID</span>
+        </div>
+        <div class="scenario-tag tag-a">Escenario A · Usuario del cliente</div>
+        <p>Con permisos delegados, la App Registration es el vehículo de autenticación pero el alcance real lo define el usuario. La app no tiene permisos propios — toma los del usuario que se loguea.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-label">Conexión — autenticación interactiva delegada</span><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+          <div class="code-body"><span class="c"># El usuario del cliente se autentica con su cuenta corporativa + MFA</span>
+<span class="c"># -Interactive abre el browser; -PersistLogin cachea el token para el loop</span>
+<span class="k">Connect-PnPOnline</span> <span class="p">-Url</span> <span class="v">"https://[tenant].sharepoint.com"</span> <span class="p">-Interactive</span> <span class="p">-ClientId</span> <span class="v">"[ClientId]"</span> <span class="p">-PersistLogin</span>
+
+<span class="c"># El token obtenido refleja los permisos del usuario autenticado</span>
+<span class="c"># Si el usuario no tiene acceso a un sitio → el script reporta ErrorConexion para ese sitio</span></div>
+        </div>
+        <div class="callout ca">
+          <span class="callout-label">Ventaja de este escenario</span>
+          <p>No hace falta invitar ninguna cuenta externa al tenant. No hay cuenta B2B guest. Todo el acceso está acotado por los permisos del usuario que ejecuta — lo que simplifica la gestión y la auditoría desde IT.</p>
+        </div>
+      </div>
+
+      <div class="section" id="permisos">
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <span class="section-title">Permisos requeridos</span>
+          <span class="section-badge badge-ok">Delegados · Acotados al usuario</span>
+        </div>
+        <div class="scenario-tag tag-a">Escenario A · Usuario del cliente</div>
+        <table class="data-table">
+          <thead><tr><th>Permiso en la App</th><th>Tipo</th><th>Nivel</th><th>Para qué</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="td-mono">Sites.Read.All</div></td>
+              <td><div class="td-sm">Delegated</div></td>
+              <td><span class="perm-level level-deleg">Delegado</span></td>
+              <td><div class="td-sm">Leer bibliotecas y archivos en nombre del usuario autenticado</div></td>
+            </tr>
+            <tr>
+              <td><div class="td-mono">User.Read</div></td>
+              <td><div class="td-sm">Delegated</div></td>
+              <td><span class="perm-level level-deleg">Delegado</span></td>
+              <td><div class="td-sm">Resolver nombres de autores de archivos (Author/Editor LookupValue)</div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout ok">
+          <span class="callout-label">Permisos mínimos posibles</span>
+          <p>En este escenario no se necesita <code>Sites.FullControl.All</code>. Los permisos delegados con <code>Sites.Read.All</code> son suficientes siempre que el usuario autenticado tenga acceso de lectura en los sitios a relevar. <strong>Es la configuración de menor privilegio posible para esta operación.</strong></p>
+        </div>
+      </div>
+
+      <div class="section" id="acceso">
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <span class="section-title">Qué toca y qué no toca</span>
+          <span class="section-badge badge-ok">Sin modificaciones</span>
+        </div>
+        <div class="scenario-tag tag-a">Escenario A · Usuario del cliente</div>
+        <table class="data-table">
+          <thead><tr><th>Qué accede</th><th>Cómo</th><th>Para qué</th></tr></thead>
+          <tbody>
+            <tr><td><div class="td-mono">Listas de bibliotecas</div></td><td><div class="td-sm">Get-PnPList (lectura)</div></td><td><div class="td-sm">Identificar bibliotecas de documentos en cada sitio. Excluye bibliotecas del sistema.</div></td></tr>
+            <tr><td><div class="td-mono">Metadatos de archivos</div></td><td><div class="td-sm">Get-PnPListItem (lectura)</div></td><td><div class="td-sm">Nombre, ruta, extensión, tamaño, fechas, autor, versión, estado de checkout. No descarga contenido.</div></td></tr>
+            <tr><td><div class="td-mono">Nombres de usuarios</div></td><td><div class="td-sm">LookupValue de Author/Editor</div></td><td><div class="td-sm">Nombre de display del autor para análisis de ownership.</div></td></tr>
+          </tbody>
+        </table>
+        <div class="callout ok">
+          <span class="callout-label">Lo que el script no hace</span>
+          <p>No descarga contenido de archivos. No modifica permisos ni contenido. No accede a Teams, OneDrive personal, buzones ni conversaciones. <strong>Solo extrae metadatos de archivos en las bibliotecas de SharePoint de los sitios marcados para relevar.</strong></p>
+        </div>
+      </div>
+
+    </div><!-- /content-a -->
+
+
+    <!-- ====================================================
+         CONTENIDO ESCENARIO B — Circo Studio
+    ===================================================== -->
+    <div class="content-wrap" id="content-b">
+
+      <div class="section" id="prereqs">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <span class="section-title">Prerequisitos</span>
+          <span class="section-badge badge-warn">Requiere acción de IT</span>
+        </div>
+        <div class="scenario-tag tag-b">Escenario B · Circo Studio</div>
+        <p>Antes de que Circo Studio pueda ejecutar el script, IT del cliente necesita completar dos acciones en el tenant:</p>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-dot">01</div>
+            <div class="flow-content">
+              <div class="flow-title">Registrar la App Registration en Entra ID del cliente</div>
+              <div class="flow-body">Se crea una aplicación en Entra ID con permisos de <strong>aplicación</strong> — no delegados. La app actúa con sus propios permisos, independientemente de qué usuario la invoca. Circo Studio provee el Client ID que va en la configuración del script.</div>
+              <div class="flow-detail">
+                <span class="k">Entra ID</span> → App registrations → New registration<br>
+                <span class="k">Nombre sugerido:</span> <span class="v">CuraduriaM365-Circo-ReadOnly</span><br>
+                <span class="k">Tipo de cuenta:</span> <span class="v">Single tenant</span><br>
+                <span class="k">Redirect URI:</span> <span class="v">https://login.microsoftonline.com/common/oauth2/nativeclient</span><br>
+                <span class="k">Tipo de permisos:</span> <span class="v">Application (no en nombre de usuario)</span>
+              </div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">02</div>
+            <div class="flow-content">
+              <div class="flow-title">Invitar la cuenta B2B de Circo Studio y asignarla como SCA</div>
+              <div class="flow-body">
+                La cuenta guest de Circo Studio se invita al tenant y se asigna como
+                <strong>Site Collection Administrator</strong> en los sitios GR- a relevar.
+                Este acceso es temporal y se revoca al finalizar el engagement.
+                El Script A AsignarOwner automatiza esta asignación en lote.
+              </div>
+              <div class="flow-detail">
+                <span class="k">Alcance:</span> <span class="v">Solo sitios GR- Legacy marcados para relevar</span><br>
+                <span class="k">Rol:</span> <span class="v">Site Collection Administrator (temporal)</span><br>
+                <span class="k">Revocación:</span> <span class="v">Notificación formal de Circo Studio al cierre del engagement</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="app-reg">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <span class="section-title">App Registration — permisos de aplicación</span>
+          <span class="section-badge badge-info">Entra ID</span>
+        </div>
+        <div class="scenario-tag tag-b">Escenario B · Circo Studio</div>
+        <p>Con permisos de aplicación, la App Registration tiene sus propios permisos independientes de cualquier usuario. La sesión siempre requiere MFA interactivo — no existe ningún secreto almacenado que permita conexión automática.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-label">Conexión — autenticación interactiva con cuenta B2B</span><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+          <div class="code-body"><span class="c"># La cuenta B2B de Circo Studio completa MFA en el browser del operador</span>
+<span class="c"># -ForceAuthentication evita reutilizar tokens de sesiones anteriores</span>
+<span class="c"># -PersistLogin cachea el token para reutilizar en el loop sin repetir MFA</span>
+<span class="k">Connect-PnPOnline</span> <span class="p">-Url</span> <span class="v">"https://[tenant].sharepoint.com"</span> <span class="p">-Interactive</span> <span class="p">-ClientId</span> <span class="v">"[ClientId]"</span> <span class="p">-ForceAuthentication</span>
+
+<span class="c"># Cada sitio del loop reutiliza el token sin nuevo login:</span>
+<span class="k">Connect-PnPOnline</span> <span class="p">-Url</span> <span class="v">$sitioUrl</span> <span class="p">-ClientId</span> <span class="v">$clientId</span> <span class="p">-PersistLogin</span></div>
+        </div>
+        <div class="callout cb">
+          <span class="callout-label">Por qué Interactive y no un secreto de aplicación</span>
+          <p>El script usa autenticación interactiva en lugar de un secreto o certificado. Esto significa que la sesión siempre requiere la presencia física de un operador de Circo Studio que complete el flujo de MFA. <strong>No existe ninguna credencial almacenada que pueda usarse sin intervención humana.</strong></p>
+        </div>
+      </div>
+
+      <div class="section" id="permisos">
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <span class="section-title">Permisos requeridos</span>
+          <span class="section-badge badge-warn">Application — requiere consentimiento de admin</span>
+        </div>
+        <div class="scenario-tag tag-b">Escenario B · Circo Studio</div>
+        <table class="data-table">
+          <thead><tr><th>Permiso en la App</th><th>Tipo</th><th>Nivel</th><th>Para qué</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="td-mono">Sites.Read.All</div></td>
+              <td><div class="td-sm">Application</div></td>
+              <td><span class="perm-level level-read">Lectura</span></td>
+              <td><div class="td-sm">Leer contenido de bibliotecas de documentos en cada sitio</div></td>
+            </tr>
+            <tr>
+              <td><div class="td-mono">Sites.FullControl.All</div></td>
+              <td><div class="td-sm">Application</div></td>
+              <td><span class="perm-level level-admin">Admin temporal</span></td>
+              <td><div class="td-sm">PnP.PowerShell lo requiere para conectar como SCA y acceder a listas ocultas del sistema. No se usa para escribir — solo para leer metadatos de todas las bibliotecas</div></td>
+            </tr>
+            <tr>
+              <td><div class="td-mono">User.Read.All</div></td>
+              <td><div class="td-sm">Application</div></td>
+              <td><span class="perm-level level-read">Lectura</span></td>
+              <td><div class="td-sm">Resolver nombres de display de autores y modificadores de archivos</div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout warn">
+          <span class="callout-label">Sobre Sites.FullControl.All</span>
+          <p>PnP.PowerShell requiere este permiso para actuar como SCA y acceder a todas las bibliotecas incluidas las del sistema. <strong>En la práctica el script solo ejecuta <code>Get-PnPList</code> y <code>Get-PnPListItem</code> — ambas de solo lectura.</strong></p>
+          <p>Si la política del cliente no permite este permiso permanente en una App Registration, puede configurarse como permiso temporal y revocarse al finalizar el engagement.</p>
+        </div>
+      </div>
+
+      <div class="section" id="acceso">
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <span class="section-title">Qué toca y qué no toca</span>
+          <span class="section-badge badge-ok">Sin modificaciones</span>
+        </div>
+        <div class="scenario-tag tag-b">Escenario B · Circo Studio</div>
+        <table class="data-table">
+          <thead><tr><th>Qué accede</th><th>Cómo</th><th>Para qué</th></tr></thead>
+          <tbody>
+            <tr><td><div class="td-mono">Listas de bibliotecas</div></td><td><div class="td-sm">Get-PnPList (lectura)</div></td><td><div class="td-sm">Identificar bibliotecas de documentos en cada sitio. Excluye bibliotecas del sistema.</div></td></tr>
+            <tr><td><div class="td-mono">Metadatos de archivos</div></td><td><div class="td-sm">Get-PnPListItem (lectura)</div></td><td><div class="td-sm">Nombre, ruta, extensión, tamaño, fechas, autor, versión, estado de checkout. No descarga contenido.</div></td></tr>
+            <tr><td><div class="td-mono">Nombres de usuarios</div></td><td><div class="td-sm">LookupValue de Author/Editor</div></td><td><div class="td-sm">Nombre de display del autor para análisis de ownership.</div></td></tr>
+          </tbody>
+        </table>
+        <div class="callout ok">
+          <span class="callout-label">Lo que el script no hace</span>
+          <p>No descarga contenido de archivos. No modifica permisos ni contenido. No accede a Teams, OneDrive personal, buzones ni conversaciones. No deja ninguna cuenta activa en el tenant después del engagement. <strong>Solo extrae metadatos de archivos en las bibliotecas de SharePoint de los sitios GR- marcados para relevar.</strong></p>
+        </div>
+      </div>
+
+    </div><!-- /content-b -->
+
+
+    <!-- ====================================================
+         SECCIONES COMUNES A AMBOS ESCENARIOS
+    ===================================================== -->
+    <div class="content-wrap" id="content-common">
+
+      <div class="section" id="flujo">
+        <div class="section-header">
+          <span class="section-num">05</span>
+          <span class="section-title">Flujo de ejecución</span>
+          <span class="section-badge badge-info">Igual en ambos escenarios</span>
+        </div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-dot">01</div>
+            <div class="flow-content">
+              <div class="flow-title">Carga de configuración</div>
+              <div class="flow-body">Lee el <code>cliente_config.json</code>: URL del tenant, Client ID, carpeta de salida, lista de sitios ya analizados y prefijos de canales a excluir.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">02</div>
+            <div class="flow-content">
+              <div class="flow-title">Lectura del CSV de inventario y filtrado de sitios</div>
+              <div class="flow-body">Carga el CSV del Script A Inventario y aplica los filtros: solo sitios GR- Legacy, excluye bloqueados (ReadOnly), excluye ya analizados por ID, excluye canales de padres cubiertos. Ordena por storage descendente — los sitios más grandes se procesan primero.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">03</div>
+            <div class="flow-content">
+              <div class="flow-title">Login único con token cacheado</div>
+              <div class="flow-body"><strong>Esta es la única autenticación de toda la ejecución.</strong> El browser se abre para MFA. El token resultante se cachea con <code>-PersistLogin</code> y se reutiliza para conectar a cada sitio del loop sin volver a pedir credenciales.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">04</div>
+            <div class="flow-content">
+              <div class="flow-title">Loop por sitio — checkpoint, conexión, extracción</div>
+              <div class="flow-body">Para cada sitio: verifica checkpoint (si ya existe CSV, lo saltea), conecta reutilizando el token, obtiene las bibliotecas de documentos, itera los archivos con paginado de 100 ítems y escribe por lotes al CSV de salida sin acumular en memoria.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">05</div>
+            <div class="flow-content">
+              <div class="flow-title">Resumen parcial guardado después de cada sitio</div>
+              <div class="flow-body">Después de procesar cada sitio se escribe una fila al CSV de resumen. Si la ejecución se interrumpe en cualquier punto, el resumen parcial ya está guardado y los sitios con CSV existente no se vuelven a procesar.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">06</div>
+            <div class="flow-content">
+              <div class="flow-title">Resumen final</div>
+              <div class="flow-body">Imprime y guarda: sitios completados, salteados, sin contenido y con error. Desconecta la sesión.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="paginado">
+        <div class="section-header">
+          <span class="section-num">06</span>
+          <span class="section-title">Paginado y gestión de memoria</span>
+          <span class="section-badge badge-ok">Sin timeout ni acumulación</span>
+        </div>
+        <p>El script resuelve dos problemas clásicos al iterar grandes volúmenes en SharePoint Online: timeout por operaciones largas y agotamiento de memoria por acumular resultados.</p>
+        <div class="diagram">
+          <div class="diagram-title">Flujo de cada página de 100 ítems</div>
+          <div class="diagram-body">
+            <div class="diag-row">
+              <div class="diag-box spo">SPO · Biblioteca</div>
+              <div class="diag-arrow">→</div>
+              <div class="diag-box mem">Lote 100 ítems<br><span style="font-size:.62rem;opacity:.7">ScriptBlock · en memoria</span></div>
+              <div class="diag-arrow">→</div>
+              <div class="diag-box local">CSV · disco local<br><span style="font-size:.62rem;opacity:.7">Export-Csv -Append</span></div>
+            </div>
+            <div class="diag-row" style="margin-top:1rem">
+              <div style="font-size:.78rem;color:var(--ink-4)">Cada lote se escribe inmediatamente y se descarta de memoria. En ningún momento se acumulan todos los archivos de un sitio en RAM.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-label">Núcleo del mecanismo — ScriptBlock con escritura por lote</span><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+          <div class="code-body"><span class="c"># PageSize 100: evita el List View Threshold de SPO (límite de 5.000 ítems por consulta)</span>
+<span class="c"># -ScriptBlock ejecuta este bloque por cada página recibida, sin acumular</span>
+<span class="k">Get-PnPListItem</span> <span class="p">-List</span> <span class="v">$bib.Title</span> <span class="p">-PageSize</span> <span class="v">100</span> <span class="p">-Fields</span> <span class="v">$Fields</span> <span class="p">-ScriptBlock</span> {
+    <span class="p">Param</span>(<span class="k">$items</span>)
+
+    <span class="c"># Generic.List es O(1) por Add(); @() += es O(n²) — crítico en miles de archivos</span>
+    <span class="k">$lote</span> = [System.Collections.Generic.List[PSObject]]::new()
+
+    <span class="k">foreach</span> (<span class="k">$item</span> in <span class="k">$items</span>) {
+        <span class="k">if</span> (<span class="k">$item</span>.FileSystemObjectType <span class="p">-eq</span> <span class="v">"File"</span>) {
+            <span class="k">$lote</span>.Add([PSCustomObject]@{ <span class="c">... metadatos ...</span> })
+        }
+    }
+
+    <span class="c"># Escribir al CSV inmediatamente — el primer lote crea el archivo con headers</span>
+    <span class="k">if</span> (<span class="k">$script:primerLote</span>) {
+        <span class="k">$lote</span> | <span class="k">Export-Csv</span> <span class="p">-Path</span> <span class="k">$csvSitio</span> <span class="p">-NoTypeInformation</span> <span class="p">-Encoding</span> <span class="v">UTF8</span>
+        <span class="k">$script:primerLote</span> = <span class="v">$false</span>
+    } <span class="k">else</span> {
+        <span class="k">$lote</span> | <span class="k">Export-Csv</span> <span class="p">-Path</span> <span class="k">$csvSitio</span> <span class="p">-NoTypeInformation</span> <span class="p">-Encoding</span> <span class="v">UTF8</span> <span class="p">-Append</span>
+    }
+    <span class="c"># $lote sale de scope → GC libera memoria antes del próximo lote</span>
+}</div>
+        </div>
+        <div class="callout info">
+          <span class="callout-label">Por qué PageSize 100 y no más grande</span>
+          <p>SharePoint Online tiene un límite de <strong>5.000 ítems por consulta REST</strong> (List View Threshold). <code>PageSize 100</code> divide la iteración en llamadas pequeñas que nunca alcanzan ese límite. Una biblioteca con 50.000 archivos se procesa con 500 llamadas de 100 ítems sin timeout y sin romper ningún límite de la plataforma.</p>
+        </div>
+      </div>
+
+      <div class="section" id="checkpoint">
+        <div class="section-header">
+          <span class="section-num">07</span>
+          <span class="section-title">Checkpoint e idempotencia</span>
+          <span class="section-badge badge-ok">Seguro para interrumpir</span>
+        </div>
+        <p>El script puede interrumpirse en cualquier momento y volver a ejecutarse sin reprocesar los sitios ya completados.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-label">Lógica de checkpoint — al inicio de cada sitio</span><button class="code-copy" onclick="copyCode(this)">Copiar</button></div>
+          <div class="code-body"><span class="c"># Buscar si ya existe un CSV de salida para este sitio</span>
+<span class="k">$existente</span> = <span class="k">Get-ChildItem</span> <span class="k">$carpetaSalida</span> <span class="p">-Filter</span> <span class="v">"*B_Docs_${nombreLimpio}_*.csv"</span> | <span class="k">Select-Object</span> <span class="p">-First</span> <span class="v">1</span>
+
+<span class="k">if</span> (<span class="k">$existente</span>) {
+    <span class="c"># Ya fue relevado — saltear sin conectar al sitio</span>
+    <span class="k">return</span> @{ Estado = <span class="v">"Salteado"</span>; CsvPath = <span class="k">$existente</span>.FullName }
+}
+<span class="c"># Si no existe CSV → proceder con el relevamiento completo</span></div>
+        </div>
+        <div class="callout warn">
+          <span class="callout-label">Sitio interrumpido a mitad</span>
+          <p>Si el script se corta mientras procesa un sitio, ese sitio queda con un CSV parcial. En la próxima ejecución el checkpoint lo detecta como "ya procesado" y lo saltea.</p>
+          <p>Para forzar el re-relevamiento de un sitio puntual: eliminar su CSV de la carpeta de salida y volver a ejecutar. El Script C Refresh también cubre esta situación.</p>
+        </div>
+      </div>
+
+      <div class="section" id="estados">
+        <div class="section-header">
+          <span class="section-num">08</span>
+          <span class="section-title">Estados posibles por sitio</span>
+          <span class="section-badge badge-info">CSV de resumen</span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Estado</th><th>Qué significa</th><th>Acción</th></tr></thead>
+          <tbody>
+            <tr><td><span class="state-code state-ok">OK</span></td><td class="td-sm">CSV de salida generado con todos los archivos del sitio.</td><td class="td-sm">Ninguna.</td></tr>
+            <tr><td><span class="state-code state-info">Salteado</span></td><td class="td-sm">Ya existía CSV — no se volvió a conectar.</td><td class="td-sm">Ninguna, salvo que el CSV sea parcial (ver sección 07).</td></tr>
+            <tr><td><span class="state-code state-info">SinArchivos</span></td><td class="td-sm">El sitio tiene bibliotecas pero todas están vacías.</td><td class="td-sm">Verificar si es esperado o hay un problema de permisos.</td></tr>
+            <tr><td><span class="state-code state-info">SinBibliotecas</span></td><td class="td-sm">El sitio no tiene bibliotecas de documentos activas.</td><td class="td-sm">Normal en sitios de solo canales de Teams sin uso documental.</td></tr>
+            <tr><td><span class="state-code state-alert">ErrorConexion</span></td><td class="td-sm">No se pudo conectar al sitio. Permisos insuficientes, sitio bloqueado o URL incorrecta.</td><td class="td-sm">Verificar que el usuario o la cuenta B2B tiene SCA en ese sitio.</td></tr>
+            <tr><td><span class="state-code state-alert">ErrorBibliotecas</span></td><td class="td-sm">Conexión exitosa pero falló la obtención de bibliotecas. Puede ser throttling de la API.</td><td class="td-sm">Revisar el LOG.txt para el error específico. Volver a ejecutar suele resolverlo.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" id="archivos">
+        <div class="section-header">
+          <span class="section-num">09</span>
+          <span class="section-title">Archivos generados</span>
+          <span class="section-badge badge-info">Solo en disco local</span>
+        </div>
+        <p>Todos los archivos se generan en la carpeta local configurada. <strong>Ningún archivo se sube al tenant ni se comparte fuera de la sesión de trabajo.</strong></p>
+        <div class="files-list">
+          <div class="file-row">
+            <div class="file-name">[Cliente]_B_Docs_[Sitio]_[ts].csv</div>
+            <div><span class="file-type ft-csv">CSV · UTF-8</span></div>
+            <div class="file-desc">Uno por sitio. Inventario completo de archivos con metadatos. Ver sección 10.</div>
+          </div>
+          <div class="file-row">
+            <div class="file-name">[Cliente]_B_Masivo_Resumen_[ts].csv</div>
+            <div><span class="file-type ft-csv">CSV · UTF-8</span></div>
+            <div class="file-desc">Una fila por sitio. Estado, archivos, errores, duración. Se escribe después de cada sitio.</div>
+          </div>
+          <div class="file-row">
+            <div class="file-name">[Cliente]_B_Masivo_[ts]_LOG.txt</div>
+            <div><span class="file-type ft-txt">TXT · UTF-8</span></div>
+            <div class="file-desc">Log completo con timestamp. Conexiones, errores, conteos por biblioteca, resumen final.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="columnas">
+        <div class="section-header">
+          <span class="section-num">10</span>
+          <span class="section-title">Columnas del CSV de salida</span>
+          <span class="section-badge badge-info">Solo metadatos</span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Columna</th><th>Origen en SPO</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td><div class="td-mono">Sitio / URL_Sitio</div></td><td class="td-sm">Parámetro del script</td><td class="td-sm">Nombre y URL del sitio procesado</td></tr>
+            <tr><td><div class="td-mono">Biblioteca</div></td><td class="td-sm">Get-PnPList · Title</td><td class="td-sm">Nombre de la biblioteca de documentos</td></tr>
+            <tr><td><div class="td-mono">Ruta_Completa / Carpeta</div></td><td class="td-sm">FileRef</td><td class="td-sm">Ruta relativa del archivo y carpeta contenedora</td></tr>
+            <tr><td><div class="td-mono">Nombre_Archivo</div></td><td class="td-sm">FileLeafRef</td><td class="td-sm">Nombre con extensión</td></tr>
+            <tr><td><div class="td-mono">Extension / Categoria</div></td><td class="td-sm">File_x0020_Type / calculado</td><td class="td-sm">Extensión y categoría legible (PDF, Word, CAD, etc.)</td></tr>
+            <tr><td><div class="td-mono">Tamaño_Bytes/KB/MB</div></td><td class="td-sm">File_x0020_Size</td><td class="td-sm">Tamaño en tres unidades</td></tr>
+            <tr><td><div class="td-mono">Fecha_Creacion / Modificacion</div></td><td class="td-sm">Created / Modified</td><td class="td-sm">Fecha y hora de creación y última modificación</td></tr>
+            <tr><td><div class="td-mono">Creado_Por / Modificado_Por</div></td><td class="td-sm">Author/Editor · LookupValue</td><td class="td-sm">Nombre de display del autor y último modificador</td></tr>
+            <tr><td><div class="td-mono">Version</div></td><td class="td-sm">_UIVersionString</td><td class="td-sm">Número de versión actual (ej: 3.0)</td></tr>
+            <tr><td><div class="td-mono">Archivo_Bloqueado</div></td><td class="td-sm">CheckoutUser</td><td class="td-sm">Sí/No si el archivo tiene checkout activo</td></tr>
+            <tr><td><div class="td-mono">Profundidad_Carpeta</div></td><td class="td-sm">Calculado de FileRef</td><td class="td-sm">Cantidad de niveles de carpeta anidados</td></tr>
+            <tr><td><div class="td-mono">Destino_Migracion / Accion / Notas</div></td><td class="td-sm">Vacío al generarse</td><td class="td-sm">Columnas para completar durante el análisis de curaduría</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" id="auditoria">
+        <div class="section-header">
+          <span class="section-num">11</span>
+          <span class="section-title">Auditoría y trazabilidad</span>
+          <span class="section-badge badge-ok">Auditable por Microsoft</span>
+        </div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-dot">A</div>
+            <div class="flow-content">
+              <div class="flow-title">Log local del script</div>
+              <div class="flow-body">El archivo <code>_LOG.txt</code> registra cada conexión, biblioteca procesada, conteo de archivos por lote, errores y resumen final con timestamp por línea.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">B</div>
+            <div class="flow-content">
+              <div class="flow-title">Unified Audit Log de Microsoft 365</div>
+              <div class="flow-body">Toda actividad de la App Registration y la cuenta que ejecuta queda registrada en el Unified Audit Log del tenant, consultable desde el Microsoft Purview Compliance Portal.</div>
+              <div class="flow-detail">
+                <span class="k">Purview</span> → Audit → Search<br>
+                <span class="k">Actividad:</span> <span class="v">FileAccessed, FileAccessedExtended, ListItemsViewed</span><br>
+                <span class="k">Usuario:</span> <span class="v">cuenta del ejecutor o App Registration ID</span>
+              </div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">C</div>
+            <div class="flow-content">
+              <div class="flow-title">Revocación de acceso al finalizar (Escenario B)</div>
+              <div class="flow-body">Al concluir el engagement, Circo Studio notifica formalmente al cliente para que revoque en tres puntos:</div>
+              <div class="flow-detail">
+                <span class="k">1.</span> <span class="v">Remover la cuenta B2B del rol SCA en todos los sitios</span><br>
+                <span class="k">2.</span> <span class="v">Deshabilitar o eliminar la App Registration en Entra ID</span><br>
+                <span class="k">3.</span> <span class="v">Verificar en el Unified Audit Log que no hubo actividad posterior</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="callout ok">
+          <span class="callout-label">Resumen de la postura de seguridad</span>
+          <p>El script es de solo lectura, requiere MFA interactivo en cada sesión, no almacena credenciales, no sube datos al tenant, no accede al contenido de archivos y toda su actividad es auditable desde Microsoft Purview.</p>
+        </div>
+      </div>
+
+    </div><!-- /content-common -->
+
+  </main>
+</div><!-- /wrap -->
+
+<div class="doc-footer">
+  <span><strong>Circo Studio</strong> · Kit M365 Curaduría · Script_B_Masivo.ps1 v1.0</span>
+  <span><a href="https://circostudio.io" target="_blank">circostudio.io</a> · <a href="mailto:contacto@circostudio.io">contacto@circostudio.io</a></span>
+</div>
+
+<script>
+let currentScenario = null;
+
+function setScenario(s) {
+  currentScenario = s;
+
+  // Botones
+  document.getElementById('btn-a').className = 'selector-btn' + (s === 'a' ? ' selected-a' : '');
+  document.getElementById('btn-b').className = 'selector-btn' + (s === 'b' ? ' selected-b' : '');
+
+  // Prompt inicial
+  document.getElementById('select-prompt').style.display = 'none';
+
+  // Contenido condicional
+  document.getElementById('content-a').className      = 'content-wrap' + (s === 'a' ? ' visible' : '');
+  document.getElementById('content-b').className      = 'content-wrap' + (s === 'b' ? ' visible' : '');
+  document.getElementById('content-common').className = 'content-wrap visible';
+
+  // Indicador en sidebar
+  const ind = document.getElementById('sb-indicator');
+  ind.className = 'sb-scenario visible mode-' + s;
+  ind.textContent = s === 'a' ? 'Escenario A · Usuario del cliente' : 'Escenario B · Circo Studio';
+}
+
+// Scroll activo en sidebar
+const sections = document.querySelectorAll('.section[id], .doc-header[id]');
+const links    = document.querySelectorAll('.sb-link');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.sb-link[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-15% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+
+// Copiar código
+function copyCode(btn) {
+  const code = btn.closest('.code-block').querySelector('.code-body').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copiado';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  });
+}
+</script>
+</body>
+</html>
