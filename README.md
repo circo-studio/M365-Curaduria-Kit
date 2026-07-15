@@ -1,6 +1,6 @@
 # M365 Curaduría Kit
 
-Toolkit de Circo Studio para diagnóstico, análisis y mejora del estado informacional de organizaciones en Microsoft 365.
+Toolkit para diagnóstico, análisis y mejora del estado informacional de organizaciones en Microsoft 365.
 
 ---
 
@@ -14,7 +14,7 @@ La premisa central: los datos que una organización genera en su día a día tie
 
 ## Para quién es
 
-Consultores de Circo Studio que ejecutan engagements de gobernanza informacional. El kit es cliente-agnóstico: cada engagement instancia su propia configuración sobre la estructura común.
+Para cualquier persona u organización que necesite diagnosticar y mejorar el estado informacional de su entorno M365. Los scripts son un punto de inicio — están diseñados para ser modificados y adaptados a cada realidad. No hay dos tenants iguales.
 
 ---
 
@@ -37,59 +37,56 @@ Consultores de Circo Studio que ejecutan engagements de gobernanza informacional
 ```
 M365-Curaduria-Kit/
 │
-├── powershell/
-│   ├── M365Curaduria.psm1          # Módulo compartido (6 funciones base)
-│   ├── ScriptA-Inventario.ps1      # Inventario de sitios del tenant
-│   ├── ScriptB-Relevamiento.ps1    # Relevamiento de documentos por sitio
-│   ├── ScriptC-AsignarOwner.ps1    # Asignación de owner temporal
-│   ├── ScriptD-Masivo.ps1          # Wrapper de ejecución masiva
-│   └── New-KitCuraduria.ps1        # Scaffolding de nuevo engagement
+├── PowerShell/
+│   ├── M365Curaduria.psm1              # Módulo compartido (funciones base)
+│   ├── Script_A_Inventario.ps1         # Inventario de sitios del tenant
+│   ├── Script_A_AsignarOwner.ps1       # Asignación de owner temporal
+│   ├── Script_B_Masivo.ps1             # Relevamiento masivo de documentos
+│   └── Script_C_Refresh.ps1            # Actualización incremental
 │
-├── python/
-│   ├── m365_curaduria.py           # Módulo compartido
-│   ├── analisis_contenido.py       # Detección de duplicados, obsoletos, categorías
-│   ├── reporte_sitios.py           # Métricas por sitio
-│   └── generar_indice.py           # Índice consolidado del tenant
+├── Python/
+│   ├── m365_curaduria.py               # Módulo compartido
+│   ├── analizar_contenido.py           # Detección de duplicados, obsoletos, categorías
+│   ├── generar_informes_sitio.py       # Métricas por sitio
+│   └── generar_indice.py               # Índice consolidado del tenant
 │
-├── config/
-│   ├── cliente_config.json         # Plantilla de configuración por engagement
-│   └── kit_config_editor.html      # Editor visual de configuración
+├── Config/
+│   ├── cliente_config.json             # Plantilla de configuración por engagement
+│   └── kit_config_editor.html          # Editor visual de configuración + snippets
 │
-├── entregables/
-│   ├── analisis-sitio.html         # Plantilla: análisis de sitio individual
-│   ├── comparativo-carpetas.html   # Plantilla: origen vs. destino
-│   ├── dashboard-isi.html          # Plantilla: dashboard ISI
-│   └── reporte-ejecutivo.html      # Plantilla: presentación a dirección
+├── Posicionamiento/
+│   ├── CS_Curaduria_Index.html         # Índice de la serie
+│   ├── CS_Curaduria_Por_Que.html       # La gobernanza como problema no-tecnológico
+│   ├── CS_Curaduria_Como.html          # Modelo de engagement en cuatro fases
+│   ├── CS_Curaduria_Kit.html           # Introducción al kit
+│   ├── CS_Script_B_Documentacion_IT.html  # Documentación técnica: Script B Masivo
+│   └── CS_AppRegistration_Guia.html    # Guía de App Registration para el tenant
 │
-├── posicionamiento/
-│   ├── index.html                  # Índice de la serie
-│   ├── por-que.html                # La gobernanza como problema no-tecnológico
-│   ├── metodologia.html            # Modelo de engagement en cuatro fases
-│   ├── kit.html                    # Introducción al kit
-│   └── script-b-masivo.html        # Documentación técnica IT: Script B Masivo
+├── Runbooks/
+│   └── Runbook_IdentidadVisual_M365.ps1   # Runbook: identidad visual M365
 │
-└── runbook/
-    └── configuracion-visual-m365.html  # Runbook: identidad visual M365
+└── New-KitCuraduria.ps1                # Scaffolding de nuevo engagement
 ```
 
 ---
 
 ## Cómo usar en un nuevo engagement
 
-1. Ejecutar `New-KitCuraduria.ps1` — genera la estructura de carpetas locales para el cliente
-2. Editar `cliente_config.json` con los datos del tenant (usar `kit_config_editor.html`)
-3. Ejecutar **Script A** para obtener el inventario de sitios
-4. Priorizar sitios y ejecutar **Script D** (masivo) o **Script B** sitio por sitio
-5. Correr los scripts Python sobre los CSVs generados
-6. Producir los entregables HTML con los datos del cliente
+1. Ejecutar `New-KitCuraduria.ps1` — genera la estructura de carpetas locales
+2. Editar `Config/cliente_config.json` (usar `kit_config_editor.html` como editor visual)
+3. Ejecutar **Script_A_Inventario** para obtener el inventario de sitios del tenant
+4. Ejecutar **Script_A_AsignarOwner** para asignar acceso en los sitios a relevar
+5. Ejecutar **Script_B_Masivo** sobre la lista de sitios priorizados
+6. Correr los tres scripts Python sobre los CSVs generados
+7. Revisar los entregables HTML producidos con los datos del tenant
 
 ---
 
 ## Requisitos técnicos
 
 - **PowerShell 7+** con módulo [PnP.PowerShell](https://pnp.github.io/powershell/) instalado
-- **Python 3.10+** con dependencias en `python/requirements.txt`
-- App Registration en el tenant del cliente con permisos `Sites.FullControl.All` (o acceso delegado con cuenta de Circo Studio como SCA)
+- **Python 3.10+**
+- App Registration en el tenant con permisos `Sites.FullControl.All`, o acceso delegado con una cuenta con rol de Site Collection Administrator
 
 ---
 
@@ -97,4 +94,4 @@ M365-Curaduria-Kit/
 
 MIT — ver [LICENSE](./LICENSE)
 
-© 2025 Circo Studio
+© 2025 Circo Studio · [circostudio.io](https://circostudio.io)
