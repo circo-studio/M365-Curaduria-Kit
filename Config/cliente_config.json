@@ -1,0 +1,36 @@
+{
+  "cliente": {
+    "nombre": "",
+    "tenant_prefix": "",
+    "sharepoint_url": "",
+    "admin_url": "",
+    "client_id": "",
+    "upn_circo": "",
+    "carpeta_local": ""
+  },
+  "fechas": {
+    "migracion": "",
+    "inactividad_anios": 2
+  },
+  "refresh": {
+    "dias_umbral": 7
+  },
+  "clasificacion": {
+    "gb_principal": 10,
+    "gb_mediano": 1,
+    "mb_archivo_grande": 100
+  },
+  "sitios_legacy": {
+    "label": "Legacy (Teams)",
+    "prefijos": [],
+    "templates": [
+      "GROUP#0",
+      "TEAMCHANNEL#0",
+      "GROUP#1",
+      "TEAMCHANNEL#1"
+    ]
+  },
+  "sitios_excluidos": [],
+  "canales_excluidos": [],
+  "informes_prioritarios": []
+}
