@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Índice de Salud Informacional — Modelo de referencia — Circo Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0F1A24;
+  --ink-2:  #2A3D50;
+  --ink-3:  #4A6282;
+  --ink-4:  #8BA0B8;
+  --paper:  #F8F7F4;
+  --paper-2:#EEECEA;
+  --line:   #D8D4CE;
+  --accent: #1A5C4E;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); line-height: 1.7; }
+
+/* ── HEADER ── */
+.header {
+  border-bottom: 1px solid var(--line);
+  padding: 1.5rem 3rem;
+  display: flex; justify-content: space-between; align-items: center;
+  position: sticky; top: 0; background: var(--paper); z-index: 10;
+}
+.logo { font-family: 'DM Mono', monospace; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); text-decoration: none; }
+.logo strong { color: var(--ink); font-weight: 500; }
+.header-nav { display: flex; gap: 2rem; align-items: center; }
+.header-nav a { font-family: 'DM Mono', monospace; font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-4); text-decoration: none; transition: color .15s; }
+.header-nav a:hover { color: var(--ink); }
+
+/* ── PORTADA ── */
+.portada {
+  max-width: 900px; margin: 0 auto;
+  padding: 5rem 3rem 4rem;
+  border-bottom: 1px solid var(--line);
+  display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; align-items: end;
+}
+.portada-meta {}
+.portada-serie {
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ink-4);
+  margin-bottom: 3rem; line-height: 2;
+}
+.portada-serie span { display: block; }
+.portada-read {
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem; color: var(--ink-4);
+  letter-spacing: .08em;
+}
+.portada-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 1.75rem;
+  display: flex; align-items: center; gap: .75rem;
+}
+.portada-eyebrow::before { content: '▍'; animation: blink 1.1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+h1 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 700; line-height: 1.1;
+  color: var(--ink); letter-spacing: -.02em;
+  margin-bottom: 2rem;
+}
+h1 em { font-style: italic; color: var(--accent); }
+.portada-deck {
+  font-size: 1rem; color: var(--ink-3);
+  line-height: 1.78; font-weight: 300; max-width: 500px;
+}
+
+/* ── NOTA DE IMPLEMENTACIÓN ── */
+.nota-impl {
+  max-width: 900px; margin: 0 auto;
+  padding: 2.5rem 3rem;
+  border-bottom: 1px solid var(--line);
+  display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: start;
+}
+.nota-impl-label {
+  font-family: 'DM Mono', monospace; font-size: .6rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-4); white-space: nowrap; padding-top: .1rem;
+}
+.nota-impl-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .88rem; color: var(--ink-3); line-height: 1.72;
+}
+.nota-impl-body p { margin-bottom: .75rem; }
+.nota-impl-body p:last-child { margin-bottom: 0; }
+.nota-impl-body strong { color: var(--ink-2); font-weight: 600; }
+.nota-impl-body ul { padding-left: 1.25rem; margin-top: .5rem; }
+.nota-impl-body li { margin-bottom: .4rem; }
+
+/* ── CUERPO ── */
+.cuerpo {
+  max-width: 900px; margin: 0 auto;
+  padding: 5rem 3rem 7rem;
+}
+
+/* ── SECCIÓN ── */
+.seccion { margin-bottom: 5rem; }
+.seccion-eyebrow {
+  font-family: 'DM Mono', monospace; font-size: .62rem;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-4); margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.seccion-eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+h2 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+  font-weight: 700; line-height: 1.2;
+  color: var(--ink); letter-spacing: -.01em;
+  margin-bottom: 1.5rem;
+}
+h2 em { font-style: italic; color: var(--accent); }
+.cuerpo p {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.02rem; line-height: 1.85;
+  color: var(--ink); margin-bottom: 1.6rem;
+}
+.cuerpo p.sans {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .93rem; color: var(--ink-3); line-height: 1.72;
+}
+.cuerpo strong { font-weight: 700; }
+.cuerpo em { font-style: italic; color: var(--accent); }
+
+/* ── FÓRMULA ── */
+.formula-bloque {
+  margin: 2.5rem 0;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.formula-label {
+  font-family: 'DM Mono', monospace; font-size: .58rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-4); padding: .75rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-2);
+}
+.formula-body {
+  padding: 2rem 2.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 1.1rem; color: var(--ink);
+  line-height: 2.2; letter-spacing: .02em;
+}
+.formula-body .formula-main {
+  font-size: 1.3rem; font-weight: 500;
+  color: var(--ink); display: block;
+  margin-bottom: .5rem;
+}
+.formula-body .formula-vars {
+  font-size: .78rem; color: var(--ink-3);
+  font-weight: 300; line-height: 1.9;
+}
+.formula-body .formula-vars span { display: block; }
+.formula-body .var-name { color: var(--accent); }
+
+/* ── TABLA DE PESOS ── */
+.tabla-pesos {
+  margin: 2.5rem 0;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.tabla-pesos-header {
+  display: grid; grid-template-columns: 2fr 1fr 3fr;
+  font-family: 'DM Mono', monospace; font-size: .58rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-4); background: var(--paper-2);
+  border-bottom: 1px solid var(--line);
+}
+.tabla-pesos-header div, .tabla-pesos-row div {
+  padding: .75rem 1.25rem;
+}
+.tabla-pesos-row {
+  display: grid; grid-template-columns: 2fr 1fr 3fr;
+  border-bottom: 1px solid var(--line);
+  transition: background .1s;
+}
+.tabla-pesos-row:last-child { border-bottom: none; }
+.tabla-pesos-row:hover { background: var(--paper-2); }
+.dim-nombre {
+  font-family: 'DM Mono', monospace; font-size: .82rem;
+  font-weight: 500; color: var(--ink);
+}
+.dim-peso {
+  font-family: 'DM Mono', monospace; font-size: 1.1rem;
+  font-weight: 300; color: var(--accent);
+}
+.dim-desc {
+  font-family: 'DM Sans', sans-serif; font-size: .83rem;
+  color: var(--ink-3); line-height: 1.55;
+  display: flex; align-items: center;
+}
+
+/* ── REGLAS DE DIMENSIÓN ── */
+.dim-bloque {
+  margin: 2rem 0;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.dim-header {
+  display: flex; align-items: baseline;
+  justify-content: space-between;
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-2);
+}
+.dim-header-nombre {
+  font-family: 'DM Mono', monospace; font-size: .78rem;
+  font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink);
+}
+.dim-header-peso {
+  font-family: 'DM Mono', monospace; font-size: .7rem;
+  color: var(--accent); letter-spacing: .06em;
+}
+.dim-reglas { padding: 1.25rem 1.5rem; }
+.dim-regla {
+  display: grid; grid-template-columns: auto 1fr;
+  gap: 1.25rem; padding: .75rem 0;
+  border-bottom: 1px solid var(--line);
+  align-items: start;
+}
+.dim-regla:last-child { border-bottom: none; padding-bottom: 0; }
+.dim-pts {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.3rem; font-weight: 300;
+  line-height: 1; padding-top: .1rem;
+  min-width: 3.5rem; text-align: right;
+}
+.dim-pts.pts-100 { color: var(--accent); }
+.dim-pts.pts-50  { color: var(--ink-3); }
+.dim-pts.pts-0   { color: var(--ink-4); }
+.dim-regla-texto {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .88rem; color: var(--ink-3); line-height: 1.68;
+}
+.dim-regla-texto strong { color: var(--ink); font-weight: 600; }
+
+/* ── ESCALA DE MADUREZ ── */
+.escala {
+  margin: 2.5rem 0;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.escala-header {
+  font-family: 'DM Mono', monospace; font-size: .58rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-4); padding: .75rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-2);
+}
+.escala-item {
+  display: grid; grid-template-columns: 8rem auto 1fr;
+  border-bottom: 1px solid var(--line);
+  align-items: stretch;
+}
+.escala-item:last-child { border-bottom: none; }
+.escala-rango {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.5rem; font-weight: 300;
+  padding: 1.5rem; line-height: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--line);
+}
+.escala-item.base   .escala-rango { color: var(--ink-4); }
+.escala-item.medio  .escala-rango { color: var(--ink-3); }
+.escala-item.alto   .escala-rango { color: var(--accent); }
+.escala-rango-label {
+  font-size: .55rem; letter-spacing: .1em;
+  text-transform: uppercase; margin-top: .4rem;
+  font-weight: 400;
+}
+.escala-estado {
+  font-family: 'DM Mono', monospace; font-size: .65rem;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 1.5rem 1.25rem;
+  border-right: 1px solid var(--line);
+  display: flex; align-items: center;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  color: var(--ink-4); white-space: nowrap;
+}
+.escala-item.alto .escala-estado { color: var(--accent); }
+.escala-texto {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .88rem; color: var(--ink-3); line-height: 1.68;
+  padding: 1.5rem;
+  display: flex; align-items: center;
+}
+.escala-texto strong { color: var(--ink); font-weight: 600; }
+
+/* ── ADAPTAR ── */
+.adaptar-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 0; border: 1px solid var(--line);
+  margin: 2rem 0; overflow: hidden;
+}
+.adaptar-item {
+  padding: 1.5rem;
+  border-right: 1px solid var(--line);
+}
+.adaptar-item:last-child { border-right: none; }
+.adaptar-sector {
+  font-family: 'DM Mono', monospace; font-size: .6rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: .5rem;
+}
+.adaptar-titulo {
+  font-family: 'Libre Baskerville', serif;
+  font-size: .92rem; font-weight: 700;
+  color: var(--ink); margin-bottom: .5rem; line-height: 1.3;
+}
+.adaptar-cuerpo {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .82rem; color: var(--ink-3); line-height: 1.6;
+}
+
+/* ── PULL QUOTE ── */
+.pull {
+  margin: 3rem 0;
+  padding: 2rem 0 2rem 2rem;
+  border-left: 2px solid var(--ink);
+}
+.pull p {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.2rem; font-style: italic;
+  color: var(--ink); line-height: 1.6; margin: 0;
+}
+
+/* ── CIERRE ── */
+.cierre {
+  border-top: 2px solid var(--ink);
+  padding: 4rem 3rem;
+  text-align: center;
+}
+.cierre-inner { max-width: 620px; margin: 0 auto; }
+.cierre h2 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 700; color: var(--ink); line-height: 1.22;
+  margin-bottom: 1.5rem;
+}
+.cierre h2 em { font-style: italic; color: var(--accent); }
+.cierre p {
+  font-size: .96rem; color: var(--ink-3);
+  font-weight: 300; line-height: 1.78; margin-bottom: 1rem;
+}
+.cierre p strong { color: var(--ink); font-weight: 600; }
+.cierre-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+.cierre-link {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: 'DM Mono', monospace; font-size: .7rem;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent); text-decoration: none;
+  border: 1px solid var(--accent); padding: .6rem 1.4rem;
+  transition: all .15s;
+}
+.cierre-link:hover { background: var(--accent); color: white; }
+.cierre-link.secundario {
+  color: var(--ink-3); border-color: var(--line);
+}
+.cierre-link.secundario:hover { background: var(--ink); color: white; border-color: var(--ink); }
+
+/* ── FOOTER ── */
+.footer {
+  border-top: 1px solid var(--line); padding: 1.5rem 3rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-logo { font-family: 'DM Mono', monospace; font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-4); }
+.footer-logo strong { color: var(--ink-2); font-weight: 500; }
+.footer-links { display: flex; gap: 2rem; }
+.footer-links a { font-family: 'DM Mono', monospace; font-size: .62rem; color: var(--ink-4); text-decoration: none; letter-spacing: .08em; transition: color .15s; }
+.footer-links a:hover { color: var(--ink); }
+
+@media (max-width: 768px) {
+  .header, .footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .portada { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 2rem; }
+  .nota-impl { grid-template-columns: 1fr; padding: 2rem 1.5rem; gap: .75rem; }
+  .cuerpo { padding: 3rem 1.5rem 5rem; }
+  .tabla-pesos-header, .tabla-pesos-row { grid-template-columns: 1fr 1fr; }
+  .tabla-pesos-header div:last-child, .tabla-pesos-row div:last-child { display: none; }
+  .escala-item { grid-template-columns: 5rem 1fr; }
+  .escala-estado { display: none; }
+  .adaptar-grid { grid-template-columns: 1fr; }
+  .adaptar-item { border-right: none; border-bottom: 1px solid var(--line); }
+  .adaptar-item:last-child { border-bottom: none; }
+  .cierre { padding: 3rem 1.5rem; }
+  .header-nav { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="CS_Curaduria_Index.html" class="logo"><strong>Circo Studio</strong> · M365 Curaduría</a>
+  <nav class="header-nav">
+    <a href="CS_Curaduria_Index.html">← Índice</a>
+    <a href="CS_Curaduria_Kit.html">El kit →</a>
+    <a href="https://circostudio.io/laboratorio.html" target="_blank">Laboratorio</a>
+  </nav>
+</header>
+
+<div class="portada">
+  <div class="portada-meta">
+    <div class="portada-serie">
+      <span>Circo Studio</span>
+      <span>Práctica M365</span>
+      <span>Referencia técnica</span>
+    </div>
+    <div class="portada-read">Lectura: 7 minutos</div>
+  </div>
+  <div class="portada-titulo">
+    <div class="portada-eyebrow">Metodología abierta · Modelo de referencia</div>
+    <h1>El Índice de<br>Salud <em>Informacional</em></h1>
+    <p class="portada-deck">
+      El ISI es la métrica que convierte el estado del corpus
+      en un número entre 0 y 100. Este documento abre el algoritmo:
+      las fórmulas, los pesos, las reglas de cálculo por dimensión
+      y el umbral que habilita la IA.
+    </p>
+  </div>
+</div>
+
+<div class="nota-impl">
+  <div class="nota-impl-label">Nota sobre<br>el kit</div>
+  <div class="nota-impl-body">
+    <p>Los scripts incluidos en el <a href="https://github.com/circo-studio/M365-Curaduria-Kit" target="_blank" style="color:var(--accent)">M365-Curaduria-Kit</a> implementan una versión funcional del ISI adaptada a lo que es extraíble con PnP PowerShell sin acceso al contenido de los archivos. Las diferencias concretas respecto a este modelo son:</p>
+    <ul>
+      <li><strong>Calidad del corpus:</strong> el kit detecta duplicados por nombre + tamaño exacto. El modelo completo considera además patrones de distribución por rutas similares.</li>
+      <li><strong>Ciclo de vida:</strong> el kit usa la presencia de Purview como proxy binario. El modelo contempla granularidad por biblioteca y tipo de contenido.</li>
+      <li><strong>Ownership:</strong> la validación de estado de cuenta contra Entra ID requiere permisos de Graph API que no siempre están disponibles.</li>
+    </ul>
+    <p>El modelo es el objetivo. Los scripts son un punto de inicio. Cada organización debería ajustar pesos y umbrales a su realidad.</p>
+  </div>
+</div>
+
+<div class="cuerpo">
+
+  <!-- MODELO MATEMÁTICO -->
+  <div class="seccion">
+    <div class="seccion-eyebrow">01 · El modelo matemático</div>
+    <h2>Una sola fórmula, seis dimensiones</h2>
+    <p>
+      El ISI de un tenant se calcula como el promedio ponderado de seis dimensiones evaluadas por sitio,
+      agregado por volumen de almacenamiento. Los sitios más grandes impactan proporcionalmente más
+      en la métrica final — el corpus no es una colección de sitios iguales.
+    </p>
+
+    <div class="formula-bloque">
+      <div class="formula-label">Puntaje por sitio j</div>
+      <div class="formula-body">
+        <span class="formula-main">ISI_j = Σ ( D_i,j × W_i )   para i = 1..6</span>
+        <div class="formula-vars">
+          <span><span class="var-name">D_i,j</span>  →  puntaje (0–100) en la dimensión i para el sitio j</span>
+          <span><span class="var-name">W_i</span>    →  peso de la dimensión i (suma total = 1)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="formula-bloque">
+      <div class="formula-label">ISI global del tenant</div>
+      <div class="formula-body">
+        <span class="formula-main">ISI = Σ ( ISI_j × Storage_j ) / Σ Storage_j</span>
+        <div class="formula-vars">
+          <span><span class="var-name">Storage_j</span>  →  volumen en bytes del sitio j</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="sans">
+      La distribución de pesos refleja el principio rector de la práctica:
+      sin custodia humana, todo lo demás falla. El ownership concentra el mayor peso
+      porque un corpus técnicamente limpio pierde valor si nadie lo mantiene.
+    </p>
+
+    <div class="tabla-pesos">
+      <div class="tabla-pesos-header">
+        <div>Dimensión</div>
+        <div>Peso</div>
+        <div>Qué mide</div>
+      </div>
+      <div class="tabla-pesos-row">
+        <div class="dim-nombre">Ownership</div>
+        <div class="dim-peso">25%</div>
+        <div class="dim-desc">Responsable activo y validado en Entra ID</div>
+      </div>
+      <div class="tabla-pesos-row">
+        <div class="dim-nombre">Arquitectura</div>
+        <div class="dim-peso">20%</div>
+        <div class="dim-desc">Estructura gobernada — naming conventions, hubs</div>
+      </div>
+      <div class="tabla-pesos-row">
+        <div class="dim-nombre">Sharing externo</div>
+        <div class="dim-peso">20%</div>
+        <div class="dim-desc">Políticas de acceso y exposición fuera del tenant</div>
+      </div>
+      <div class="tabla-pesos-row">
+        <div class="dim-nombre">Calidad del corpus</div>
+        <div class="dim-peso">15%</div>
+        <div class="dim-desc">Reducción de duplicados, obsoletos y formatos no indexables</div>
+      </div>
+      <div class="tabla-pesos-row">
+        <div class="dim-nombre">Ciclo de vida</div>
+        <div class="dim-peso">10%</div>
+        <div class="dim-desc">Retención y archivado explícito (Purview)</div>
+      </div>
+      <div class="tabla-pesos-row">
+        <div class="dim-nombre">Actividad</div>
+        <div class="dim-peso">10%</div>
+        <div class="dim-desc">Porcentaje del corpus modificado en los últimos 90 días</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGLAS POR DIMENSIÓN -->
+  <div class="seccion">
+    <div class="seccion-eyebrow">02 · Reglas de cálculo</div>
+    <h2>Cómo se puntúa cada dimensión</h2>
+    <p>
+      Cada dimensión produce un puntaje de 0 a 100 para cada sitio.
+      El algoritmo combina reglas discretas (ownership, arquitectura, sharing, ciclo de vida)
+      con fórmulas continuas (calidad, actividad).
+    </p>
+
+    <div class="dim-bloque">
+      <div class="dim-header">
+        <div class="dim-header-nombre">1 · Ownership</div>
+        <div class="dim-header-peso">Peso: 25%</div>
+      </div>
+      <div class="dim-reglas">
+        <div class="dim-regla">
+          <div class="dim-pts pts-100">100</div>
+          <div class="dim-regla-texto">Al menos un <strong>Knowledge Owner explícito</strong> asignado con cuenta activa en Entra ID.</div>
+        </div>
+        <div class="dim-regla">
+          <div class="dim-pts pts-50">50</div>
+          <div class="dim-regla-texto">Dueños presentes pero <strong>genéricos</strong> (cuenta de servicio, cuenta de IT compartida), o solo miembros sin propietarios explícitos.</div>
+        </div>
+        <div class="dim-regla">
+          <div class="dim-pts pts-0">0</div>
+          <div class="dim-regla-texto">Sitio <strong>huérfano</strong>, o todos los propietarios registrados tienen cuenta deshabilitada en Entra ID.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dim-bloque">
+      <div class="dim-header">
+        <div class="dim-header-nombre">2 · Arquitectura</div>
+        <div class="dim-header-peso">Peso: 20%</div>
+      </div>
+      <div class="dim-reglas">
+        <div class="dim-regla">
+          <div class="dim-pts pts-100">100</div>
+          <div class="dim-regla-texto">El sitio está <strong>asociado a un Hub Site de negocio</strong>, o cumple estrictamente con las naming conventions configuradas.</div>
+        </div>
+        <div class="dim-regla">
+          <div class="dim-pts pts-0">0</div>
+          <div class="dim-regla-texto">Sitio <strong>Teams auto-generado</strong> sin clasificación, spoke suelto, o estructura legacy sin modificación estructural.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dim-bloque">
+      <div class="dim-header">
+        <div class="dim-header-nombre">3 · Sharing externo</div>
+        <div class="dim-header-peso">Peso: 20%</div>
+      </div>
+      <div class="dim-reglas">
+        <div class="dim-regla">
+          <div class="dim-pts pts-100">100</div>
+          <div class="dim-regla-texto"><code style="font-family:'DM Mono',monospace;font-size:.85em;background:var(--paper-2);padding:.1em .4em">Disabled</code> o <code style="font-family:'DM Mono',monospace;font-size:.85em;background:var(--paper-2);padding:.1em .4em">ExistingExternalUserSharingOnly</code> — compartición externa bloqueada o estrictamente controlada.</div>
+        </div>
+        <div class="dim-regla">
+          <div class="dim-pts pts-0">0</div>
+          <div class="dim-regla-texto"><code style="font-family:'DM Mono',monospace;font-size:.85em;background:var(--paper-2);padding:.1em .4em">ExternalUserAndGuestSharing</code> sin controles adicionales. <strong>Riesgo doble:</strong> exposición hoy, oversharing cuando la IA use el sitio como fuente.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dim-bloque">
+      <div class="dim-header">
+        <div class="dim-header-nombre">4 · Calidad del corpus</div>
+        <div class="dim-header-peso">Peso: 15%</div>
+      </div>
+      <div class="dim-reglas">
+        <div class="dim-regla">
+          <div class="dim-pts pts-100" style="font-size:.75rem;padding-top:.25rem">fórmula</div>
+          <div class="dim-regla-texto">
+            <div style="font-family:'DM Mono',monospace;font-size:.85rem;color:var(--ink);margin-bottom:.6rem;line-height:1.8">
+              D = 100 − ((V_dup + V_legacy + V_basura) / V_total × 100)
+            </div>
+            <strong>V_dup:</strong> archivos con mismo nombre, tamaño y extensión en rutas similares.<br>
+            <strong>V_legacy:</strong> formatos no procesables por motores semánticos (.doc sin conversión, .zip, binarios sin OCR).<br>
+            <strong>V_basura:</strong> archivos en ramas SUPERADO, BORRADORES, TMP y equivalentes.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dim-bloque">
+      <div class="dim-header">
+        <div class="dim-header-nombre">5 · Ciclo de vida</div>
+        <div class="dim-header-peso">Peso: 10%</div>
+      </div>
+      <div class="dim-reglas">
+        <div class="dim-regla">
+          <div class="dim-pts pts-100">100</div>
+          <div class="dim-regla-texto">El sitio tiene <strong>políticas de Microsoft Purview aplicadas</strong> — retención o archivado automático a nivel de sitio o biblioteca.</div>
+        </div>
+        <div class="dim-regla">
+          <div class="dim-pts pts-0">0</div>
+          <div class="dim-regla-texto">Sin políticas aplicadas. El corpus <strong>crece sin control</strong> y sin fecha de vencimiento para ningún contenido.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dim-bloque">
+      <div class="dim-header">
+        <div class="dim-header-nombre">6 · Actividad</div>
+        <div class="dim-header-peso">Peso: 10%</div>
+      </div>
+      <div class="dim-reglas">
+        <div class="dim-regla">
+          <div class="dim-pts pts-100" style="font-size:.75rem;padding-top:.25rem">fórmula</div>
+          <div class="dim-regla-texto">
+            <div style="font-family:'DM Mono',monospace;font-size:.85rem;color:var(--ink);margin-bottom:.6rem;line-height:1.8">
+              D = (V_modificado_≤90días / V_total) × 100
+            </div>
+            Se extrae el campo <code style="font-family:'DM Mono',monospace;font-size:.85em;background:var(--paper-2);padding:.1em .4em">Modified</code> de cada archivo desde el CSV de relevamiento.
+            Un sitio donde más del 50% del contenido no ha sido modificado en años indica corpus potencialmente obsoleto —
+            <strong>la IA lo ingiere con la misma confianza que el contenido vigente.</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESCALA DE MADUREZ -->
+  <div class="seccion">
+    <div class="seccion-eyebrow">03 · Escala de madurez</div>
+    <h2>Qué significa cada rango para <em>la IA</em></h2>
+    <p>
+      El ISI no es una métrica de orden — es una métrica de habilitación.
+      El umbral de 70 no es arbitrario: es el punto en que el corpus tiene
+      las condiciones técnicas para que una prueba de concepto de IA
+      produzca resultados confiables y auditables.
+    </p>
+
+    <div class="escala">
+      <div class="escala-header">Escala ISI · 0 — 100</div>
+      <div class="escala-item base">
+        <div class="escala-rango">
+          0–35
+          <span class="escala-rango-label">puntos</span>
+        </div>
+        <div class="escala-estado">Línea de base</div>
+        <div class="escala-texto">
+          Rango típico inicial en organizaciones sin gobernanza previa. Ruido informacional alto.
+          <strong>Activar Copilot o RAG en este estado produce respuestas con confianza sobre contenido obsoleto, duplicado o huérfano.</strong>
+          La IA no falla silenciosamente — amplifica el desorden.
+        </div>
+      </div>
+      <div class="escala-item medio">
+        <div class="escala-rango">
+          36–69
+          <span class="escala-rango-label">puntos</span>
+        </div>
+        <div class="escala-estado">Fase de curación</div>
+        <div class="escala-texto">
+          Progreso medible. El ownership se consolida, el sharing externo se corrige,
+          el ruido decrece. El corpus mejora su confiabilidad progresivamente.
+          <strong>Cada punto que sube el ISI es una mejora real en la capacidad del corpus de alimentar sistemas de IA.</strong>
+        </div>
+      </div>
+      <div class="escala-item alto">
+        <div class="escala-rango">
+          70+
+          <span class="escala-rango-label">puntos</span>
+        </div>
+        <div class="escala-estado">Preparación IA</div>
+        <div class="escala-texto">
+          Umbral técnico superado. Corpus confiable, owners validados, sharing controlado.
+          <strong>Las pruebas de concepto de IA pueden ejecutarse de forma segura y auditable.</strong>
+          El retorno de la inversión en curaduría empieza a materializarse.
+        </div>
+      </div>
+    </div>
+
+    <div class="pull">
+      <p>Curar primero, indexar después. La curaduría no es un paso previo molesto — es la inversión que determina el retorno de la IA.</p>
+    </div>
+  </div>
+
+  <!-- ADAPTAR EL MODELO -->
+  <div class="seccion">
+    <div class="seccion-eyebrow">04 · Adaptar el modelo</div>
+    <h2>Los pesos son un punto de inicio</h2>
+    <p class="sans">
+      Los pesos propuestos reflejan una práctica de gobernanza en organizaciones medianas con M365 como plataforma central.
+      Son una hipótesis razonable para un primer engagement, no una verdad universal.
+      Algunos contextos donde tiene sentido ajustarlos:
+    </p>
+
+    <div class="adaptar-grid">
+      <div class="adaptar-item">
+        <div class="adaptar-sector">Sectores regulados</div>
+        <div class="adaptar-titulo">Salud, finanzas, gobierno</div>
+        <div class="adaptar-cuerpo">Mayor peso en Sharing externo y Ciclo de vida. El cumplimiento normativo puede justificar una dimensión adicional específica.</div>
+      </div>
+      <div class="adaptar-item">
+        <div class="adaptar-sector">Corpus de archivo</div>
+        <div class="adaptar-titulo">Valor histórico, baja modificación</div>
+        <div class="adaptar-cuerpo">Menor peso en Actividad. Un corpus legal o técnico histórico tiene valor aunque no se modifique — la métrica de 90 días lo penaliza injustamente.</div>
+      </div>
+      <div class="adaptar-item">
+        <div class="adaptar-sector">Madurez avanzada</div>
+        <div class="adaptar-titulo">Organizaciones con Purview activo</div>
+        <div class="adaptar-cuerpo">Agregar dimensiones de etiquetado de confidencialidad y cobertura de Content Types. El modelo de seis dimensiones es el mínimo viable, no el techo.</div>
+      </div>
+    </div>
+
+    <p class="sans">
+      El modelo es abierto. El kit es MIT. Los issues y los forks son bienvenidos en
+      <a href="https://github.com/circo-studio/M365-Curaduria-Kit" target="_blank" style="color:var(--accent);font-family:'DM Mono',monospace;font-size:.88em">github.com/circo-studio/M365-Curaduria-Kit</a>.
+    </p>
+  </div>
+
+</div>
+
+<div class="cierre">
+  <div class="cierre-inner">
+    <h2>El número importa.<br>Lo que habilita <em>importa más</em>.</h2>
+    <p>
+      El ISI es una métrica de gestión, no de IT. Cada punto que sube
+      representa ownership consolidado, ruido eliminado, contenido con ciclo de vida definido.
+      <strong>Y en el extremo del recorrido, un corpus que la IA puede usar con confianza.</strong>
+    </p>
+    <div class="cierre-links">
+      <a href="CS_Curaduria_Kit.html" class="cierre-link">Ver el kit completo</a>
+      <a href="https://circostudio.io/laboratorio.html" target="_blank" class="cierre-link secundario">Laboratorio Circo Studio</a>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo"><strong>Circo Studio</strong> · M365 Curaduría · Referencia técnica</div>
+  <div class="footer-links">
+    <a href="CS_Curaduria_Index.html">Índice</a>
+    <a href="https://github.com/circo-studio/M365-Curaduria-Kit" target="_blank">GitHub</a>
+    <a href="https://circostudio.io" target="_blank">circostudio.io</a>
+  </div>
+</footer>
+
+</body>
+</html>
