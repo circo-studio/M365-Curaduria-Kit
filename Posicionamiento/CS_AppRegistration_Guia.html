@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Registration en Entra ID — Guia de configuracion · Circo Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:       #0F1A24;
+  --ink-2:     #2A3D50;
+  --ink-3:     #4A6282;
+  --ink-4:     #8BA0B8;
+  --paper:     #F8F7F4;
+  --paper-2:   #EEECEA;
+  --paper-3:   #E4E0DA;
+  --line:      #D8D4CE;
+  --line-2:    #C4BFBA;
+  --accent:    #1A5C4E;
+  --acc-bg:    #EBF5F2;
+  --acc-ln:    #A8D5C8;
+  --warn:      #7A3A00;
+  --warn-bg:   #FFF4EB;
+  --warn-ln:   #F0C898;
+  --alert:     #6B1A1A;
+  --alert-bg:  #FFF0F0;
+  --alert-ln:  #E8B4B4;
+  --blue:      #1A3A7A;
+  --blue-bg:   #EEF3FF;
+  --blue-ln:   #B8CCEE;
+  --code-bg:   #1A2430;
+  --code-text: #C8D8E8;
+  --code-key:  #7EC8E8;
+  --code-val:  #F8C880;
+  --code-cmt:  #506070;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.65}
+
+/* TOPBAR */
+.topbar{background:var(--ink);padding:0 2.5rem;height:48px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:1.5rem}
+.topbar-id{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.topbar-title{font-family:'DM Mono',monospace;font-size:.72rem;font-weight:500;color:rgba(255,255,255,.82)}
+.topbar-nav{display:flex;gap:1.5rem}
+.topbar-nav a{font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(255,255,255,.28);text-decoration:none;letter-spacing:.08em;transition:color .15s}
+.topbar-nav a:hover{color:rgba(255,255,255,.7)}
+
+/* LAYOUT */
+.wrap{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 48px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--paper-2);border-right:1px solid var(--line);padding:2rem 0;position:sticky;top:48px;height:calc(100vh - 48px);overflow-y:auto}
+.sb-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);padding:0 1.25rem .5rem}
+.sb-section{margin-bottom:.5rem}
+.sb-link{display:flex;align-items:center;gap:.6rem;padding:.45rem 1.25rem;font-size:.82rem;color:var(--ink-3);text-decoration:none;border-left:2px solid transparent;transition:all .12s}
+.sb-link:hover{color:var(--ink);background:var(--paper-3);border-left-color:var(--line-2)}
+.sb-link.active{color:var(--accent);font-weight:500;border-left-color:var(--accent);background:var(--acc-bg)}
+.sb-num{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ink-4);min-width:20px}
+.sb-divider{height:1px;background:var(--line);margin:.75rem 1.25rem}
+
+/* MAIN */
+.main{padding:3rem 4rem 6rem;max-width:860px}
+
+/* ENCABEZADO */
+.doc-header{margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid var(--line)}
+.doc-eyebrow{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);margin-bottom:1rem;display:flex;align-items:center;gap:.75rem}
+.doc-eyebrow::before{content:'';width:1.5rem;height:1px;background:var(--line-2)}
+.doc-header h1{font-size:1.6rem;font-weight:600;color:var(--ink);line-height:1.2;margin-bottom:1rem}
+.doc-header p{font-size:.93rem;color:var(--ink-3);line-height:1.72;max-width:620px}
+.doc-meta{display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap}
+.meta-item{}
+.meta-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);margin-bottom:.2rem}
+.meta-val{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--ink-2);font-weight:500}
+
+/* SECCIONES */
+.section{margin-bottom:3rem}
+.section-header{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
+.section-num{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--ink-4);min-width:24px}
+.section-title{font-size:1.05rem;font-weight:600;color:var(--ink)}
+.section-badge{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .6rem;border-radius:2px;margin-left:auto}
+.badge-ok{background:var(--acc-bg);color:var(--accent);border:1px solid var(--acc-ln)}
+.badge-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-ln)}
+.badge-info{background:var(--paper-3);color:var(--ink-3);border:1px solid var(--line)}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-ln)}
+.section p{font-size:.93rem;color:var(--ink-2);line-height:1.72;margin-bottom:1rem}
+.section p:last-child{margin-bottom:0}
+.section p strong{color:var(--ink);font-weight:600}
+
+/* PASOS */
+.steps{display:flex;flex-direction:column;border:1px solid var(--line);overflow:hidden;margin:1rem 0}
+.step{display:grid;grid-template-columns:44px 1fr;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:none}
+.step-num{background:var(--paper-2);border-right:1px solid var(--line);display:flex;align-items:flex-start;justify-content:center;padding-top:1.1rem;font-family:'DM Mono',monospace;font-size:.72rem;font-weight:500;color:var(--ink-3)}
+.step-body{padding:1rem 1.25rem}
+.step-title{font-weight:600;font-size:.92rem;color:var(--ink);margin-bottom:.4rem}
+.step-text{font-size:.86rem;color:var(--ink-3);line-height:1.65;margin-bottom:.5rem}
+.step-text:last-child{margin-bottom:0}
+.step-text strong{color:var(--ink-2);font-weight:600}
+
+/* NAVEGACION PORTAL */
+.nav-path{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;margin:.6rem 0;padding:.5rem .75rem;background:var(--paper-2);border:1px solid var(--line);font-family:'DM Mono',monospace;font-size:.72rem}
+.nav-path .sep{color:var(--ink-4)}
+.nav-path .node{color:var(--ink-2)}
+.nav-path .node.active{color:var(--accent);font-weight:500}
+
+/* CAMPO VISUAL */
+.field-visual{border:1px solid var(--line);border-radius:3px;overflow:hidden;margin:.75rem 0}
+.fv-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);padding:.5rem .85rem;border-bottom:1px solid var(--line);background:var(--paper-2)}
+.fv-body{padding:.85rem;display:flex;flex-direction:column;gap:.5rem}
+.fv-row{display:grid;grid-template-columns:140px 1fr;gap:.75rem;align-items:center}
+.fv-key{font-size:.8rem;color:var(--ink-3)}
+.fv-val{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--ink);background:var(--paper);border:1px solid var(--line);padding:.3rem .65rem}
+.fv-val.accent{background:var(--acc-bg);border-color:var(--acc-ln);color:var(--accent);font-weight:500}
+.fv-val.warn{background:var(--warn-bg);border-color:var(--warn-ln);color:var(--warn)}
+
+/* PERMISO ROWS */
+.perm-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:1rem 0}
+.perm-table th{text-align:left;font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4);padding:.5rem .75rem;border-bottom:1px solid var(--line);background:var(--paper-2)}
+.perm-table td{padding:.65rem .75rem;border-bottom:1px solid var(--line);vertical-align:top}
+.perm-table tr:last-child td{border-bottom:none}
+.perm-table tr:hover td{background:var(--paper-2)}
+.td-mono{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--ink);font-weight:500}
+.td-sm{font-size:.82rem;color:var(--ink-3);line-height:1.55}
+.perm-level{font-family:'DM Mono',monospace;font-size:.62rem;padding:.15rem .55rem;border-radius:2px;white-space:nowrap}
+.level-read{background:var(--acc-bg);color:var(--accent);border:1px solid var(--acc-ln)}
+.level-admin{background:var(--alert-bg);color:var(--alert);border:1px solid var(--alert-ln)}
+.level-deleg{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-ln)}
+
+/* CALLOUTS */
+.callout{padding:.85rem 1.1rem;border-left:2px solid;margin:1rem 0;font-size:.88rem;line-height:1.65}
+.callout-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.4rem;display:block;font-weight:600}
+.callout p{font-size:.87rem;color:var(--ink-2);margin-bottom:.35rem}
+.callout p:last-child{margin-bottom:0}
+.callout strong{color:var(--ink);font-weight:600}
+.callout.ok{background:var(--acc-bg);border-color:var(--accent)}.callout.ok .callout-label{color:var(--accent)}
+.callout.warn{background:var(--warn-bg);border-color:var(--warn)}.callout.warn .callout-label{color:var(--warn)}
+.callout.alert{background:var(--alert-bg);border-color:var(--alert)}.callout.alert .callout-label{color:var(--alert)}
+.callout.info{background:var(--paper-2);border-color:var(--line-2)}.callout.info .callout-label{color:var(--ink-3)}
+.callout.blue{background:var(--blue-bg);border-color:var(--blue)}.callout.blue .callout-label{color:var(--blue)}
+
+/* CODIGO */
+.code-block{background:var(--code-bg);border-radius:3px;overflow:hidden;margin:.75rem 0}
+.code-header{display:flex;justify-content:space-between;align-items:center;padding:.5rem 1rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.code-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.code-copy{font-family:'DM Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.3);background:none;border:1px solid rgba(255,255,255,.1);padding:.15rem .6rem;cursor:pointer;border-radius:2px;transition:all .15s}
+.code-copy:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3)}
+.code-body{padding:1rem 1.25rem;font-family:'DM Mono',monospace;font-size:.78rem;color:var(--code-text);line-height:1.9;overflow-x:auto;white-space:pre}
+.code-body .k{color:var(--code-key)}
+.code-body .v{color:var(--code-val)}
+.code-body .c{color:var(--code-cmt);font-style:italic}
+
+/* COMPARATIVA ESCENARIOS */
+.escenarios{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin:1rem 0;overflow:hidden}
+.esc-lado{background:var(--paper);padding:1.5rem}
+.esc-lado.b{background:rgba(26,92,78,.02)}
+.esc-tag{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.6rem}
+.esc-a .esc-tag{color:var(--blue)}
+.esc-b .esc-tag{color:var(--accent)}
+.esc-titulo{font-size:.92rem;font-weight:600;color:var(--ink);margin-bottom:.75rem}
+.esc-items{display:flex;flex-direction:column;gap:.4rem}
+.esc-item{font-size:.82rem;color:var(--ink-3);padding-left:.85rem;position:relative;line-height:1.55}
+.esc-item::before{content:'--';position:absolute;left:0;font-family:'DM Mono',monospace;font-size:.7rem;color:var(--ink-4)}
+.esc-item strong{color:var(--ink-2);font-weight:600}
+
+/* HIGHLIGHT UUID */
+.uuid-box{display:flex;align-items:center;gap:.75rem;margin:.75rem 0;padding:.75rem 1rem;background:var(--acc-bg);border:1px solid var(--acc-ln);border-radius:3px}
+.uuid-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.uuid-val{font-family:'DM Mono',monospace;font-size:.85rem;color:var(--ink);font-weight:500;letter-spacing:.04em}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);overflow:hidden;margin:1rem 0}
+.check-item{display:flex;align-items:flex-start;gap:.85rem;padding:.85rem 1rem;border-bottom:1px solid var(--line)}
+.check-item:last-child{border-bottom:none}
+.check-box{width:18px;height:18px;border:1px solid var(--line);background:var(--paper);flex-shrink:0;margin-top:.1rem;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--accent)}
+.check-text{font-size:.86rem;color:var(--ink-2);line-height:1.55}
+.check-text strong{color:var(--ink);font-weight:600}
+
+/* FOOTER */
+.doc-footer{border-top:1px solid var(--line);padding:1.25rem 4rem;display:flex;justify-content:space-between;align-items:center;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--ink-4)}
+.doc-footer strong{color:var(--ink-3);font-weight:500}
+.doc-footer a{color:var(--ink-4);text-decoration:none}
+.doc-footer a:hover{color:var(--ink-2)}
+
+@media(max-width:860px){
+  .wrap{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{padding:2rem 1.5rem 4rem}
+  .escenarios{grid-template-columns:1fr}
+  .doc-footer{padding-left:1.5rem;padding-right:1.5rem;flex-direction:column;gap:.5rem;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-id">Circo Studio · Kit M365 Curaduria</span>
+    <span class="topbar-title">App Registration en Entra ID — Guia de configuracion</span>
+  </div>
+  <nav class="topbar-nav">
+    <a href="CS_Curaduria_Index.html">Inicio</a>
+    <a href="CS_Script_B_Documentacion_IT.html">Doc. tecnica IT</a>
+  </nav>
+</div>
+
+<div class="wrap">
+
+  <nav class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Este documento</div>
+      <a href="#intro" class="sb-link active"><span class="sb-num">00</span>Por que este metodo</a>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-label">Creacion</div>
+      <a href="#crear" class="sb-link"><span class="sb-num">01</span>Crear la App Registration</a>
+      <a href="#permisos" class="sb-link"><span class="sb-num">02</span>Asignar permisos</a>
+      <a href="#consent" class="sb-link"><span class="sb-num">03</span>Admin consent</a>
+      <a href="#clientid" class="sb-link"><span class="sb-num">04</span>Obtener el Client ID</a>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-label">Seguridad</div>
+      <a href="#escenarios" class="sb-link"><span class="sb-num">05</span>Escenarios de ejecucion</a>
+      <a href="#alcance" class="sb-link"><span class="sb-num">06</span>Alcance real del acceso</a>
+      <a href="#auditoria" class="sb-link"><span class="sb-num">07</span>Auditoria y control</a>
+      <a href="#revocacion" class="sb-link"><span class="sb-num">08</span>Revocacion al cierre</a>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-label">Kit</div>
+      <a href="#config" class="sb-link"><span class="sb-num">09</span>Configurar en el kit</a>
+      <a href="#checklist" class="sb-link"><span class="sb-num">10</span>Checklist de onboarding</a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- 00 INTRO -->
+    <div class="doc-header" id="intro">
+      <div class="doc-eyebrow">Kit M365 Curaduria · Configuracion de acceso al tenant</div>
+      <h1>App Registration en Entra ID<br>Guia de configuracion y alcance de seguridad</h1>
+      <p>
+        Todo acceso del kit al tenant del cliente pasa por una App Registration en Entra ID.
+        Este documento explica que es, como crearla, que permisos asignar, que implica
+        en terminos de seguridad y como configurarla en el kit.
+      </p>
+      <div class="doc-meta">
+        <div class="meta-item"><div class="meta-label">Para quien</div><div class="meta-val">Consultor Circo Studio + IT del cliente</div></div>
+        <div class="meta-item"><div class="meta-label">Portal</div><div class="meta-val">portal.azure.com / Entra ID</div></div>
+        <div class="meta-item"><div class="meta-label">Tiempo estimado</div><div class="meta-val">15 a 20 minutos</div></div>
+      </div>
+    </div>
+
+    <!-- POR QUE -->
+    <div class="section">
+      <p>
+        El kit se conecta al tenant de SharePoint Online usando una
+        <strong>App Registration</strong> — una identidad de aplicacion registrada
+        en Entra ID (antes Azure Active Directory) del cliente.
+        Este es el mecanismo oficial de Microsoft para que aplicaciones externas
+        accedan a un tenant de forma controlada, con permisos explicitos
+        y actividad completamente auditable.
+      </p>
+      <p>
+        La alternativa seria usar credenciales de usuario — usuario y contrasena
+        de una cuenta del tenant. Eso tiene tres problemas graves:
+        expone credenciales personales, no permite permisos granulares
+        y no distingue en el audit log si fue una persona o un script quien accedio.
+        La App Registration resuelve los tres.
+      </p>
+
+      <div class="escenarios">
+        <div class="esc-lado esc-a">
+          <div class="esc-tag">Sin App Registration</div>
+          <div class="esc-titulo">Credenciales de usuario</div>
+          <div class="esc-items">
+            <div class="esc-item">Usuario y contrasena expuestos en el script</div>
+            <div class="esc-item">Acceso heredado del usuario — sin granularidad</div>
+            <div class="esc-item">El audit log muestra el usuario, no la aplicacion</div>
+            <div class="esc-item">Si el usuario cambia su contrasena, el script falla</div>
+            <div class="esc-item">No hay forma de revocar solo el acceso del script</div>
+          </div>
+        </div>
+        <div class="esc-lado esc-b">
+          <div class="esc-tag">Con App Registration</div>
+          <div class="esc-titulo">Identidad de aplicacion</div>
+          <div class="esc-items">
+            <div class="esc-item"><strong>Sin credenciales almacenadas</strong> — solo Client ID</div>
+            <div class="esc-item"><strong>Permisos explicitos</strong> — solo lo que se declara</div>
+            <div class="esc-item"><strong>Audit log</strong> muestra la app por nombre y ID</div>
+            <div class="esc-item">Independiente de cualquier usuario del tenant</div>
+            <div class="esc-item"><strong>Revocable</strong> en un click desde Entra ID</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout blue">
+        <span class="callout-label">El Client ID no es una contrasena</span>
+        <p>El Client ID es el identificador publico de la app — equivalente al nombre de usuario pero sin la contrasena.
+        Solo con el Client ID no se puede acceder a nada.
+        El acceso real requiere ademas autenticacion interactiva con MFA por parte del operador que ejecuta el script.
+        <strong>Por eso el kit no almacena secretos ni certificados — toda sesion requiere presencia humana.</strong></p>
+      </div>
+    </div>
+
+    <!-- 01 CREAR -->
+    <div class="section" id="crear">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <span class="section-title">Crear la App Registration</span>
+        <span class="section-badge badge-warn">Requiere Global Admin o Application Admin</span>
+      </div>
+      <p>La App Registration se crea una sola vez por tenant. La crea el administrador de IT del cliente, no Circo Studio.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Abrir el portal de Entra ID</div>
+            <div class="nav-path">
+              <span class="node">portal.azure.com</span>
+              <span class="sep">→</span>
+              <span class="node">Entra ID</span>
+              <span class="sep">→</span>
+              <span class="node active">App registrations</span>
+            </div>
+            <div class="step-text">O ingresar directamente a <code style="font-family:'DM Mono',monospace;font-size:.78rem">entra.microsoft.com</code> y buscar App registrations en el menu lateral.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Nueva registro</div>
+            <div class="step-text">Hacer click en <strong>New registration</strong> (boton azul en la parte superior).</div>
+            <div class="field-visual">
+              <div class="fv-label">Formulario de registro</div>
+              <div class="fv-body">
+                <div class="fv-row">
+                  <span class="fv-key">Name</span>
+                  <span class="fv-val accent">CuraduriaM365-Circo-ReadOnly</span>
+                </div>
+                <div class="fv-row">
+                  <span class="fv-key">Supported account types</span>
+                  <span class="fv-val">Accounts in this organizational directory only (Single tenant)</span>
+                </div>
+                <div class="fv-row">
+                  <span class="fv-key">Redirect URI (optional)</span>
+                  <span class="fv-val">Public client/native → https://login.microsoftonline.com/common/oauth2/nativeclient</span>
+                </div>
+              </div>
+            </div>
+            <div class="step-text">El nombre es libre — elegir uno que identifique claramente el proposito. El Redirect URI es necesario para que PnP.PowerShell pueda completar el flujo de autenticacion interactiva.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-title">Confirmar tipo de plataforma</div>
+            <div class="step-text">Despues de crear el registro, ir a <strong>Authentication</strong> en el menu lateral y verificar que el Redirect URI este bajo <strong>Mobile and desktop applications</strong> (no bajo Web). Si no esta, agregarlo ahi manualmente.</div>
+            <div class="callout info">
+              <span class="callout-label">Por que Mobile and desktop</span>
+              <p>PnP.PowerShell corre desde la linea de comandos — es una aplicacion de escritorio, no una app web. El tipo de plataforma determina el flujo de autenticacion OAuth. Con el tipo incorrecto, el login interactivo falla o no completa el MFA correctamente.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <div class="step-title">Habilitar Allow public client flows</div>
+            <div class="step-text">En la misma pantalla de <strong>Authentication</strong>, al final de la pagina, activar la opcion <strong>Allow public client flows → Yes</strong>. Guardar.</div>
+            <div class="step-text">Esto permite que PnP complete el flujo de autenticacion desde PowerShell sin necesitar un secreto de aplicacion almacenado.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 PERMISOS -->
+    <div class="section" id="permisos">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <span class="section-title">Asignar permisos a la App Registration</span>
+        <span class="section-badge badge-warn">Requiere admin consent posterior</span>
+      </div>
+      <p>Los permisos se configuran en <strong>API permissions</strong> en el menu lateral de la App Registration. Agregar cada permiso con el boton <strong>Add a permission → Microsoft Graph / SharePoint</strong>.</p>
+
+      <div class="nav-path">
+        <span class="node">App Registration</span>
+        <span class="sep">→</span>
+        <span class="node active">API permissions</span>
+        <span class="sep">→</span>
+        <span class="node">Add a permission</span>
+      </div>
+
+      <table class="perm-table">
+        <thead>
+          <tr><th>API</th><th>Permiso</th><th>Tipo</th><th>Nivel</th><th>Para que</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-sm">SharePoint</td>
+            <td><div class="td-mono">Sites.Read.All</div></td>
+            <td><div class="td-sm">Application</div></td>
+            <td><span class="perm-level level-read">Lectura</span></td>
+            <td><div class="td-sm">Leer bibliotecas y metadatos de archivos en cualquier sitio del tenant</div></td>
+          </tr>
+          <tr>
+            <td class="td-sm">SharePoint</td>
+            <td><div class="td-mono">Sites.FullControl.All</div></td>
+            <td><div class="td-sm">Application</div></td>
+            <td><span class="perm-level level-admin">Admin requerido</span></td>
+            <td><div class="td-sm">PnP requiere este permiso para conectar como Site Collection Administrator. En la practica solo se ejecutan operaciones de lectura — ver seccion 06</div></td>
+          </tr>
+          <tr>
+            <td class="td-sm">Microsoft Graph</td>
+            <td><div class="td-mono">User.Read.All</div></td>
+            <td><div class="td-sm">Application</div></td>
+            <td><span class="perm-level level-read">Lectura</span></td>
+            <td><div class="td-sm">Resolver nombres de display de autores y modificadores de archivos (campo Author/Editor)</div></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn">
+        <span class="callout-label">Por que Sites.FullControl.All si la operacion es de solo lectura</span>
+        <p>PnP.PowerShell necesita este permiso para poder actuar en el contexto de un Site Collection Administrator — que es el rol minimo para acceder a todas las bibliotecas de un sitio, incluidas algunas que tienen permisos restringidos.</p>
+        <p><strong>El permiso en si es amplio pero el uso real es limitado.</strong> El script solo ejecuta <code style="font-family:'DM Mono',monospace;font-size:.78rem">Get-PnPList</code> y <code style="font-family:'DM Mono',monospace;font-size:.78rem">Get-PnPListItem</code> — ambas operaciones de lectura. Ninguna llamada del kit crea, modifica ni elimina contenido.</p>
+        <p>Si la politica de seguridad del cliente no permite Sites.FullControl.All de forma permanente, puede otorgarse como permiso temporal y revocarse al finalizar el engagement.</p>
+      </div>
+    </div>
+
+    <!-- 03 CONSENT -->
+    <div class="section" id="consent">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <span class="section-title">Otorgar Admin Consent</span>
+        <span class="section-badge badge-warn">Requiere Global Admin</span>
+      </div>
+      <p>
+        Los permisos de tipo <strong>Application</strong> (no delegados) requieren que un Global Administrator
+        del tenant los apruebe explicitamente. Sin este paso, la App Registration existe
+        pero no puede acceder a nada.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Otorgar consentimiento</div>
+            <div class="nav-path">
+              <span class="node">App Registration</span>
+              <span class="sep">→</span>
+              <span class="node active">API permissions</span>
+              <span class="sep">→</span>
+              <span class="node">Grant admin consent for [tenant]</span>
+            </div>
+            <div class="step-text">El boton esta en la parte superior de la lista de permisos. Al hacer click, el Global Admin confirma que aprueba los permisos para toda la organizacion.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Verificar que el consent fue otorgado</div>
+            <div class="step-text">Despues del consent, cada permiso debe mostrar un tilde verde en la columna <strong>Status</strong> con el texto <strong>Granted for [NombreTenant]</strong>. Si alguno muestra "Not granted", repetir el paso anterior.</div>
+            <div class="field-visual">
+              <div class="fv-label">Estado esperado en API permissions</div>
+              <div class="fv-body">
+                <div class="fv-row"><span class="fv-key">Sites.Read.All</span><span class="fv-val accent">✓ Granted for [Tenant]</span></div>
+                <div class="fv-row"><span class="fv-key">Sites.FullControl.All</span><span class="fv-val accent">✓ Granted for [Tenant]</span></div>
+                <div class="fv-row"><span class="fv-key">User.Read.All</span><span class="fv-val accent">✓ Granted for [Tenant]</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 CLIENT ID -->
+    <div class="section" id="clientid">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <span class="section-title">Obtener el Client ID</span>
+        <span class="section-badge badge-ok">Lo que va en el kit</span>
+      </div>
+      <p>
+        El Client ID es el identificador unico de la App Registration dentro del tenant.
+        Es el unico valor que hay que pasar al kit — no hay contrasenas ni secretos.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Ir a la pantalla Overview de la App Registration</div>
+            <div class="nav-path">
+              <span class="node">App Registration</span>
+              <span class="sep">→</span>
+              <span class="node active">Overview</span>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Copiar el Application (client) ID</div>
+            <div class="step-text">En la pantalla Overview aparecen tres IDs. El que se necesita es <strong>Application (client) ID</strong> — el primero de la lista. Tiene formato UUID.</div>
+            <div class="field-visual">
+              <div class="fv-label">Overview de la App Registration</div>
+              <div class="fv-body">
+                <div class="fv-row"><span class="fv-key">Display name</span><span class="fv-val">CuraduriaM365-Circo-ReadOnly</span></div>
+                <div class="fv-row"><span class="fv-key">Application (client) ID</span><span class="fv-val accent">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx ← este</span></div>
+                <div class="fv-row"><span class="fv-key">Object ID</span><span class="fv-val warn">no usar este</span></div>
+                <div class="fv-row"><span class="fv-key">Directory (tenant) ID</span><span class="fv-val warn">no usar este</span></div>
+              </div>
+            </div>
+            <div class="step-text">Hacer click en el icono de copiar al lado del Application (client) ID. Este UUID es lo que va en el campo Client ID del editor de configuracion del kit.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="uuid-box">
+        <span class="uuid-label">Client ID · formato esperado</span>
+        <span class="uuid-val">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</span>
+      </div>
+
+      <div class="callout ok">
+        <span class="callout-label">No confundir con el Object ID ni el Tenant ID</span>
+        <p>Los tres IDs en la pantalla Overview tienen el mismo formato UUID. El kit usa exclusivamente el <strong>Application (client) ID</strong>. El Object ID identifica el objeto en el directorio y el Tenant ID identifica al tenant — ninguno de los dos sirve para autenticar la app.</p>
+      </div>
+    </div>
+
+    <!-- 05 ESCENARIOS -->
+    <div class="section" id="escenarios">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <span class="section-title">Escenarios de ejecucion</span>
+        <span class="section-badge badge-info">Dos modelos de acceso</span>
+      </div>
+      <p>El kit soporta dos escenarios de ejecucion con implicancias distintas en permisos y auditoria:</p>
+
+      <div class="escenarios">
+        <div class="esc-lado esc-a">
+          <div class="esc-tag">Escenario A</div>
+          <div class="esc-titulo">Un usuario del cliente ejecuta el script</div>
+          <div class="esc-items">
+            <div class="esc-item">La App Registration usa permisos <strong>delegados</strong></div>
+            <div class="esc-item">El acceso esta acotado al nivel del usuario que se loguea</div>
+            <div class="esc-item">Solo necesita <code style="font-family:'DM Mono',monospace;font-size:.75rem">Sites.Read.All</code> delegado</div>
+            <div class="esc-item">No se invita ninguna cuenta externa al tenant</div>
+            <div class="esc-item">El audit log muestra la cuenta del usuario + la app</div>
+            <div class="esc-item"><strong>Menor superficie de acceso</strong></div>
+          </div>
+        </div>
+        <div class="esc-lado esc-b">
+          <div class="esc-tag">Escenario B</div>
+          <div class="esc-titulo">Circo Studio ejecuta el script</div>
+          <div class="esc-items">
+            <div class="esc-item">La App Registration usa permisos de <strong>aplicacion</strong></div>
+            <div class="esc-item">Se invita la cuenta B2B de Circo Studio como guest</div>
+            <div class="esc-item">Requiere <code style="font-family:'DM Mono',monospace;font-size:.75rem">Sites.FullControl.All</code> application</div>
+            <div class="esc-item">La cuenta B2B se asigna como SCA en sitios especificos</div>
+            <div class="esc-item">El audit log muestra la cuenta B2B + el Client ID de la app</div>
+            <div class="esc-item"><strong>Mayor trazabilidad de las acciones de Circo</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <span class="callout-label">Cual elegir</span>
+        <p>Si el cliente tiene un administrador de IT disponible para ejecutar los scripts, el Escenario A es preferible — menor privilegio, sin cuenta externa. El Escenario B es el flujo estandar cuando Circo Studio lleva el engagement de forma autonoma. En ambos casos la App Registration es la misma — solo cambian los tipos de permisos configurados.</p>
+      </div>
+    </div>
+
+    <!-- 06 ALCANCE -->
+    <div class="section" id="alcance">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <span class="section-title">Alcance real del acceso</span>
+        <span class="section-badge badge-ok">Solo lectura de metadatos</span>
+      </div>
+      <p>
+        Tener un permiso en Entra ID no significa que el kit use todo el alcance de ese permiso.
+        Los permisos son el techo — lo que el kit realmente hace es el piso.
+        Esta tabla muestra la diferencia:
+      </p>
+      <table class="perm-table">
+        <thead><tr><th>Permiso en Entra ID</th><th>Lo que permite tecnicamente</th><th>Lo que el kit usa en la practica</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><div class="td-mono">Sites.Read.All</div></td>
+            <td><div class="td-sm">Leer cualquier contenido de cualquier sitio SPO del tenant</div></td>
+            <td><div class="td-sm">Leer metadatos de archivos (nombre, tamano, fechas, autor) en sitios GR- marcados para relevar</div></td>
+          </tr>
+          <tr>
+            <td><div class="td-mono">Sites.FullControl.All</div></td>
+            <td><div class="td-sm">Crear, modificar y eliminar contenido en cualquier sitio SPO</div></td>
+            <td><div class="td-sm">Conectar al sitio como SCA para poder leer todas las bibliotecas. Ninguna operacion de escritura.</div></td>
+          </tr>
+          <tr>
+            <td><div class="td-mono">User.Read.All</div></td>
+            <td><div class="td-sm">Leer el perfil completo de todos los usuarios del tenant</div></td>
+            <td><div class="td-sm">Resolver el nombre de display del autor de cada archivo (LookupValue del campo Author)</div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout ok">
+        <span class="callout-label">Lo que el kit nunca hace</span>
+        <p>El kit no descarga el contenido de ningun archivo. No modifica permisos. No crea ni elimina elementos. No accede a Teams, OneDrive personal, buzones ni conversaciones. No accede a sitios que no esten en la lista de sitios a relevar del config JSON.</p>
+      </div>
+    </div>
+
+    <!-- 07 AUDITORIA -->
+    <div class="section" id="auditoria">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <span class="section-title">Auditoria y control desde el tenant</span>
+        <span class="section-badge badge-ok">Auditable en Microsoft Purview</span>
+      </div>
+      <p>
+        Toda la actividad de la App Registration queda registrada en el
+        <strong>Unified Audit Log</strong> de Microsoft 365, accesible desde el
+        Microsoft Purview Compliance Portal. IT puede consultar exactamente
+        que accedio, cuando y desde que cuenta.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">A</div>
+          <div class="step-body">
+            <div class="step-title">Consultar actividad en Purview</div>
+            <div class="nav-path">
+              <span class="node">compliance.microsoft.com</span>
+              <span class="sep">→</span>
+              <span class="node">Audit</span>
+              <span class="sep">→</span>
+              <span class="node active">New search</span>
+            </div>
+            <div class="field-visual">
+              <div class="fv-label">Parametros de busqueda recomendados</div>
+              <div class="fv-body">
+                <div class="fv-row"><span class="fv-key">Activities</span><span class="fv-val">FileAccessed, FileAccessedExtended, ListItemsViewed</span></div>
+                <div class="fv-row"><span class="fv-key">Users</span><span class="fv-val">cuenta B2B de Circo o App Registration ID</span></div>
+                <div class="fv-row"><span class="fv-key">Date range</span><span class="fv-val">Periodo del engagement</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">B</div>
+          <div class="step-body">
+            <div class="step-title">Monitorear la App Registration en Entra ID</div>
+            <div class="nav-path">
+              <span class="node">Entra ID</span>
+              <span class="sep">→</span>
+              <span class="node">App registrations</span>
+              <span class="sep">→</span>
+              <span class="node">CuraduriaM365-Circo-ReadOnly</span>
+              <span class="sep">→</span>
+              <span class="node active">Audit logs / Sign-ins</span>
+            </div>
+            <div class="step-text">Desde esta pantalla se puede ver cada vez que la app se autentico, desde que IP, con que resultado y que usuario completo el MFA. Cada sesion del kit aparece como un evento de sign-in separado.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 REVOCACION -->
+    <div class="section" id="revocacion">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <span class="section-title">Revocacion al cierre del engagement</span>
+        <span class="section-badge badge-info">Responsabilidad compartida</span>
+      </div>
+      <p>
+        Al concluir el engagement, Circo Studio notifica formalmente al cliente
+        para que revoque el acceso. La revocacion es responsabilidad del IT del cliente
+        — Circo Studio no puede revocar sus propios accesos desde afuera.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Deshabilitar o eliminar la App Registration</div>
+            <div class="nav-path">
+              <span class="node">Entra ID</span>
+              <span class="sep">→</span>
+              <span class="node">App registrations</span>
+              <span class="sep">→</span>
+              <span class="node">CuraduriaM365-Circo-ReadOnly</span>
+              <span class="sep">→</span>
+              <span class="node active">Delete</span>
+            </div>
+            <div class="step-text">Eliminar la app invalida inmediatamente todos los tokens activos. Si se prefiere conservar el registro de auditoria, deshabilitarla en lugar de eliminarla: <strong>Overview → Enabled for users to sign-in → No</strong>.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Remover la cuenta B2B (Escenario B)</div>
+            <div class="nav-path">
+              <span class="node">Entra ID</span>
+              <span class="sep">→</span>
+              <span class="node">Users</span>
+              <span class="sep">→</span>
+              <span class="node active">[cuenta guest Circo]</span>
+              <span class="sep">→</span>
+              <span class="node">Delete</span>
+            </div>
+            <div class="step-text">Esto revoca el acceso de la cuenta guest a todos los sitios donde fue asignada como SCA. Verificar en el Unified Audit Log que no hubo actividad posterior a la fecha de notificacion de cierre.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-title">Verificar en el Audit Log que no hay actividad posterior</div>
+            <div class="step-text">Correr la busqueda en Purview (seccion 07) con el rango de fechas posterior a la notificacion de cierre. No deberia aparecer ninguna actividad de la app ni de la cuenta B2B.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09 CONFIGURAR EN EL KIT -->
+    <div class="section" id="config">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <span class="section-title">Configurar el Client ID en el kit</span>
+        <span class="section-badge badge-ok">Ultimo paso</span>
+      </div>
+      <p>
+        Con la App Registration creada y el Client ID copiado, pegarlo en el editor
+        de configuracion del kit. Es el unico campo de acceso que requiere gestion manual.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Abrir el editor de configuracion</div>
+            <div class="step-text">Abrir <strong>Config\kit_config_editor.html</strong> en el browser. No requiere servidor — funciona directamente desde el sistema de archivos.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Completar la seccion Identidad del cliente</div>
+            <div class="field-visual">
+              <div class="fv-label">Campos a completar en el editor</div>
+              <div class="fv-body">
+                <div class="fv-row"><span class="fv-key">Nombre del cliente</span><span class="fv-val accent">Nombre comercial del cliente</span></div>
+                <div class="fv-row"><span class="fv-key">Prefijo del tenant</span><span class="fv-val accent">La parte antes de .sharepoint.com</span></div>
+                <div class="fv-row"><span class="fv-key">Client ID</span><span class="fv-val accent">UUID copiado de Entra ID ← este paso</span></div>
+                <div class="fv-row"><span class="fv-key">UPN cuenta B2B</span><span class="fv-val">Solo Escenario B</span></div>
+                <div class="fv-row"><span class="fv-key">Carpeta base local</span><span class="fv-val">Donde se van a guardar los CSVs</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-title">Descargar el cliente_config.json</div>
+            <div class="step-text">Usar el boton <strong>Descargar cliente_config.json</strong> en el editor. Guardar en <code style="font-family:'DM Mono',monospace;font-size:.78rem">Clientes\[NombreCliente]\Config\</code>.</div>
+            <div class="step-text">Este archivo es el que se pasa con <code style="font-family:'DM Mono',monospace;font-size:.78rem">-ConfigPath</code> a todos los scripts del kit.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">Verificar la conexion antes de ejecutar el relevamiento</span>
+          <button class="code-copy" onclick="copyCode(this)">Copiar</button>
+        </div>
+        <div class="code-body"><span class="c"># Test rapido de conexion con el Client ID configurado</span>
+<span class="c"># Si la ventana de login se abre y completa sin error, la App Registration esta bien</span>
+<span class="k">$config</span>   = Get-Content <span class="v">".\Clientes\[Cliente]\Config\cliente_config.json"</span> | ConvertFrom-Json
+<span class="k">$clientId</span> = <span class="k">$config</span>.cliente.client_id
+<span class="k">$tenantUrl</span>= <span class="k">$config</span>.cliente.sharepoint_url
+
+Connect-PnPOnline <span class="v">-Url $tenantUrl</span> <span class="v">-ClientId $clientId</span> <span class="v">-Interactive</span>
+
+<span class="c"># Si la conexion es exitosa, probar una lectura basica</span>
+Get-PnPSite
+Disconnect-PnPOnline
+Write-Host <span class="v">"Conexion OK - App Registration configurada correctamente"</span> -ForegroundColor Green</div>
+      </div>
+    </div>
+
+    <!-- 10 CHECKLIST -->
+    <div class="section" id="checklist">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <span class="section-title">Checklist de onboarding de nuevo cliente</span>
+        <span class="section-badge badge-info">Antes de ejecutar el primer script</span>
+      </div>
+      <div class="checklist">
+        <div class="check-item">
+          <div class="check-box">1</div>
+          <div class="check-text"><strong>App Registration creada</strong> en Entra ID del cliente con nombre descriptivo</div>
+        </div>
+        <div class="check-item">
+          <div class="check-box">2</div>
+          <div class="check-text"><strong>Redirect URI configurado</strong> como Mobile/Desktop → https://login.microsoftonline.com/common/oauth2/nativeclient</div>
+        </div>
+        <div class="check-item">
+          <div class="check-box">3</div>
+          <div class="check-text"><strong>Allow public client flows</strong> activado en Authentication</div>
+        </div>
+        <div class="check-item">
+          <div class="check-box">4</div>
+          <div class="check-text"><strong>Permisos asignados</strong> segun el escenario de ejecucion (A o B)</div>
+        </div>
+        <div class="check-item">
+          <div class="check-box">5</div>
+          <div class="check-text"><strong>Admin consent otorgado</strong> — todos los permisos muestran tilde verde en API permissions</div>
+        </div>
+        <div class="check-item">
+          <div class="check-box">6</div>
+          <div class="check-text"><strong>Client ID copiado</strong> desde Overview → Application (client) ID</div>
+        </div>
+        <div class="check-item">
+          <div class="check-box">7</div>
+          <div class="check-text"><strong>cliente_config.json completado</strong> con el Client ID y resto de parametros del tenant</div>
+        </div>
+        <div class="check-item">
+          <div class="check-box">8</div>
+          <div class="check-text"><strong>Conexion de prueba exitosa</strong> con el snippet de verificacion (seccion 09)</div>
+        </div>
+        <div class="check-item">
+          <div class="check-box">9</div>
+          <div class="check-text"><strong>Cuenta B2B invitada al tenant</strong> (solo Escenario B — Circo Studio ejecuta)</div>
+        </div>
+        <div class="check-item">
+          <div class="check-box">10</div>
+          <div class="check-text"><strong>Acuerdo de cierre documentado</strong> — IT del cliente sabe que debe revocar la app al finalizar el engagement</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="doc-footer">
+  <span><strong>Circo Studio</strong> · Kit M365 Curaduria · App Registration v1.0</span>
+  <span>
+    <a href="CS_Curaduria_Index.html">Indice</a>
+    &nbsp;·&nbsp;
+    <a href="CS_Script_B_Documentacion_IT.html">Doc. tecnica IT</a>
+    &nbsp;·&nbsp;
+    <a href="https://circostudio.io" target="_blank">circostudio.io</a>
+  </span>
+</div>
+
+<script>
+const sections = document.querySelectorAll('.section[id], .doc-header[id]');
+const links    = document.querySelectorAll('.sb-link');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.sb-link[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-15% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+
+function copyCode(btn) {
+  const code = btn.closest('.code-block').querySelector('.code-body').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copiado';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  });
+}
+</script>
+</body>
+</html>
