@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Por qué el gobierno del conocimiento no es tecnología — Circo Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0F1A24;
+  --ink-2:  #2A3D50;
+  --ink-3:  #4A6282;
+  --ink-4:  #8BA0B8;
+  --paper:  #F8F7F4;
+  --paper-2:#EEECEA;
+  --line:   #D8D4CE;
+  --accent: #1A5C4E;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); line-height: 1.7; }
+
+/* ── HEADER ── */
+.header {
+  border-bottom: 1px solid var(--line);
+  padding: 1.5rem 3rem;
+  display: flex; justify-content: space-between; align-items: center;
+  position: sticky; top: 0; background: var(--paper); z-index: 10;
+}
+.logo { font-family: 'DM Mono', monospace; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); text-decoration: none; }
+.logo strong { color: var(--ink); font-weight: 500; }
+.header-nav { display: flex; gap: 2rem; align-items: center; }
+.header-nav a { font-family: 'DM Mono', monospace; font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-4); text-decoration: none; transition: color .15s; }
+.header-nav a:hover { color: var(--ink); }
+
+/* ── PORTADA ── */
+.portada {
+  max-width: 900px; margin: 0 auto;
+  padding: 5rem 3rem 4rem;
+  border-bottom: 1px solid var(--line);
+  display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; align-items: end;
+}
+.portada-meta {}
+.portada-serie {
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ink-4);
+  margin-bottom: 3rem; line-height: 2;
+}
+.portada-serie span { display: block; }
+.portada-read {
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem; color: var(--ink-4);
+  letter-spacing: .08em;
+}
+.portada-titulo {}
+.portada-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 1.75rem;
+  display: flex; align-items: center; gap: .75rem;
+}
+.portada-eyebrow::before { content: '▍'; animation: blink 1.1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+h1 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 700; line-height: 1.1;
+  color: var(--ink); letter-spacing: -.02em;
+  margin-bottom: 2rem;
+}
+h1 em { font-style: italic; color: var(--accent); }
+.portada-deck {
+  font-size: 1rem; color: var(--ink-3);
+  line-height: 1.78; font-weight: 300; max-width: 500px;
+}
+
+/* ── ENSAYO ── */
+.ensayo {
+  max-width: 680px; margin: 0 auto;
+  padding: 5rem 3rem 7rem;
+}
+
+/* PRIMER PÁRRAFO */
+.drop::first-letter {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 4.4rem; font-weight: 700;
+  float: left; line-height: .85;
+  margin: .04em .13em 0 0;
+  color: var(--ink);
+}
+
+.ensayo p {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.08rem; line-height: 1.88;
+  color: var(--ink); margin-bottom: 1.8rem;
+}
+.ensayo p.lead { font-size: 1.15rem; }
+.ensayo p.small {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .93rem; color: var(--ink-3);
+  line-height: 1.75; margin-bottom: 1.5rem;
+}
+.ensayo strong { font-weight: 700; }
+.ensayo em { font-style: italic; color: var(--accent); }
+
+/* SEPARADOR */
+.sep {
+  display: flex; align-items: baseline; gap: 1.25rem;
+  margin: 3.5rem 0;
+}
+.sep-num {
+  font-family: 'DM Mono', monospace; font-size: .7rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-4); white-space: nowrap;
+}
+.sep-line { flex: 1; height: 1px; background: var(--line); }
+
+/* PULL */
+.pull {
+  margin: 3rem 0;
+  padding: 2rem 0 2rem 2rem;
+  border-left: 2px solid var(--ink);
+}
+.pull p {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.25rem; font-style: italic;
+  color: var(--ink); line-height: 1.6; margin: 0;
+}
+.pull-attr {
+  display: block; margin-top: .75rem;
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-4);
+}
+
+/* ESCENA — recuadro de texto */
+.scene {
+  margin: 3rem 0;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+}
+.scene-label {
+  font-family: 'DM Mono', monospace; font-size: .6rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-4); padding: 1rem 1.75rem .75rem;
+  border-bottom: 1px solid var(--line);
+}
+.scene-body { padding: 1.75rem; }
+.scene p {
+  font-family: 'Libre Baskerville', serif;
+  font-size: .97rem; font-style: italic;
+  color: var(--ink-2); line-height: 1.78;
+  margin-bottom: .9rem;
+}
+.scene p:last-child { margin-bottom: 0; }
+.scene strong { color: var(--ink); font-style: normal; }
+
+/* CONTRASTE DOS COLUMNAS */
+.contraste {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; border: 1px solid var(--line);
+  margin: 2.5rem 0; overflow: hidden;
+}
+.contraste-lado {
+  padding: 1.75rem;
+  border-right: 1px solid var(--line);
+}
+.contraste-lado:last-child { border-right: none; }
+.contraste-lado.nuevo { background: rgba(26,92,78,.03); }
+.contraste-etiqueta {
+  font-family: 'DM Mono', monospace; font-size: .58rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-4); margin-bottom: .6rem;
+}
+.contraste-lado.nuevo .contraste-etiqueta { color: var(--accent); }
+.contraste-titulo {
+  font-family: 'Libre Baskerville', serif;
+  font-size: .95rem; font-weight: 700;
+  color: var(--ink); margin-bottom: .5rem;
+}
+.contraste-cuerpo {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .84rem; color: var(--ink-3); line-height: 1.65;
+}
+
+/* GRILLA ISI */
+.isi {
+  border: 1px solid var(--line);
+  margin: 2.5rem 0; overflow: hidden;
+}
+.isi-header {
+  font-family: 'DM Mono', monospace; font-size: .6rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-4); padding: .85rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  display: flex; justify-content: space-between;
+}
+.isi-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+}
+.isi-item {
+  padding: 1.25rem;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.isi-item:nth-child(3), .isi-item:nth-child(6) { border-right: none; }
+.isi-item:nth-child(4), .isi-item:nth-child(5), .isi-item:nth-child(6) { border-bottom: none; }
+.isi-dim {
+  font-family: 'DM Mono', monospace; font-size: .6rem;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: .4rem;
+}
+.isi-peso {
+  font-family: 'DM Mono', monospace; font-size: 1.4rem;
+  font-weight: 300; color: var(--ink); line-height: 1;
+  margin-bottom: .4rem;
+}
+.isi-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .8rem; color: var(--ink-3); line-height: 1.55;
+}
+
+/* DEFINICIÓN */
+.definicion {
+  border: 1px solid var(--ink); padding: 1.75rem 2rem;
+  margin: 2.5rem 0;
+}
+.definicion-label {
+  font-family: 'DM Mono', monospace; font-size: .6rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-4); margin-bottom: .75rem;
+}
+.definicion p {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.02rem; font-style: italic;
+  color: var(--ink); line-height: 1.65; margin: 0;
+}
+
+/* CIERRE */
+.cierre {
+  border-top: 2px solid var(--ink);
+  padding: 4rem 3rem;
+  text-align: center;
+}
+.cierre-inner { max-width: 620px; margin: 0 auto; }
+.cierre h2 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 700; color: var(--ink); line-height: 1.22;
+  margin-bottom: 1.5rem;
+}
+.cierre h2 em { font-style: italic; color: var(--accent); }
+.cierre p {
+  font-size: .96rem; color: var(--ink-3);
+  font-weight: 300; line-height: 1.78; margin-bottom: 1rem;
+}
+.cierre p strong { color: var(--ink); font-weight: 600; }
+.cierre p:last-of-type { margin-bottom: 0; }
+.cierre-link {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: 'DM Mono', monospace; font-size: .7rem;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent); text-decoration: none;
+  border: 1px solid var(--accent); padding: .6rem 1.4rem;
+  margin-top: 2rem; transition: all .15s;
+}
+.cierre-link:hover { background: var(--accent); color: white; }
+
+/* FOOTER */
+.footer {
+  border-top: 1px solid var(--line); padding: 1.5rem 3rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-logo { font-family: 'DM Mono', monospace; font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-4); }
+.footer-logo strong { color: var(--ink-2); font-weight: 500; }
+.footer-links { display: flex; gap: 2rem; }
+.footer-links a { font-family: 'DM Mono', monospace; font-size: .62rem; color: var(--ink-4); text-decoration: none; letter-spacing: .08em; transition: color .15s; }
+.footer-links a:hover { color: var(--ink); }
+
+@media (max-width: 768px) {
+  .header, .footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .portada { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 2rem; }
+  .ensayo { padding: 3rem 1.5rem 5rem; }
+  .contraste { grid-template-columns: 1fr; }
+  .contraste-lado { border-right: none; border-bottom: 1px solid var(--line); }
+  .isi-grid { grid-template-columns: 1fr 1fr; }
+  .cierre { padding: 3rem 1.5rem; }
+  .header-nav { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="CS_Curaduria_Index.html" class="logo"><strong>Circo Studio</strong> · M365 Curaduría</a>
+  <nav class="header-nav">
+    <a href="CS_Curaduria_Index.html">← Índice</a>
+    <a href="CS_Curaduria_Como.html">El cómo →</a>
+    <a href="https://circostudio.io/laboratorio.html" target="_blank">Laboratorio</a>
+  </nav>
+</header>
+
+<div class="portada">
+  <div class="portada-meta">
+    <div class="portada-serie">
+      <span>Circo Studio</span>
+      <span>Práctica M365</span>
+      <span>Ensayo 01 / 02</span>
+    </div>
+    <div class="portada-read">Lectura: 9 minutos</div>
+  </div>
+  <div class="portada-titulo">
+    <div class="portada-eyebrow">Sobre el gobierno, el conocimiento y lo que la IA hace visible</div>
+    <h1>Por qué el gobierno<br>del conocimiento<br>no es <em>tecnología</em></h1>
+    <p class="portada-deck">
+      El primer error en cualquier iniciativa de inteligencia artificial
+      no ocurre al elegir el modelo equivocado. Ocurre mucho antes —
+      cuando la organización decide llamarle "gobierno de datos"
+      a lo que en realidad es la gestión de su activo más importante.
+    </p>
+  </div>
+</div>
+
+<article class="ensayo">
+
+  <p class="drop lead">
+    Existe una distinción que casi ninguna organización hace antes de comenzar
+    su transformación digital, y es la que determina si la iniciativa va a producir
+    valor real o va a producir la ilusión de modernidad con el caos de siempre
+    debajo. No es una distinción tecnológica. Es semántica. Y la semántica,
+    en este caso, lo cambia todo.
+  </p>
+
+  <p>
+    La distinción es esta: <em>datos</em> y <em>conocimiento</em> no son la misma cosa.
+    Las organizaciones no tienen principalmente datos. Tienen conocimiento —
+    sobre cómo funciona realmente su operación, sobre cómo se tomaron
+    las decisiones que determinaron su historia, sobre qué errores no conviene
+    repetir y qué aprendizajes nadie tuvo tiempo de documentar porque el trabajo
+    no esperaba. Ese conocimiento vive en las personas, en los correos de hace tres años,
+    en las planillas que alguien armó "para uso personal" y terminaron siendo
+    la única fuente de verdad de un área entera.
+  </p>
+
+  <p>
+    Cuando una organización llama a eso "datos" y decide "gobernarlo",
+    está eligiendo el nombre equivocado para el problema correcto.
+    Y el nombre equivocado produce las soluciones equivocadas.
+  </p>
+
+  <div class="sep">
+    <span class="sep-num">I · Lo que el nombre produce</span>
+    <div class="sep-line"></div>
+  </div>
+
+  <p>
+    La palabra "datos" evoca tablas, registros, archivos en un servidor.
+    Evoca algo técnico — algo que administra IT, algo que los demás
+    no necesitan entender para hacer su trabajo.
+    Por eso el "gobierno de datos" termina siendo, sistemáticamente,
+    un proyecto de IT que el negocio tolera en lugar de un activo
+    que el negocio construye.
+  </p>
+
+  <div class="contraste">
+    <div class="contraste-lado">
+      <div class="contraste-etiqueta">Lo que la industria llama a esto</div>
+      <div class="contraste-titulo">Gobierno de datos</div>
+      <div class="contraste-cuerpo">
+        Políticas, roles y controles sobre los activos de información.
+        Necesario. Correcto. Y casi nadie quiere ser parte de él porque
+        evoca burocracia, comités y procesos que ralentizan el trabajo real.
+      </div>
+    </div>
+    <div class="contraste-lado nuevo">
+      <div class="contraste-etiqueta">Lo que en realidad describe</div>
+      <div class="contraste-titulo">Gestión del conocimiento organizacional</div>
+      <div class="contraste-cuerpo">
+        El proceso por el cual una organización captura, organiza y preserva
+        lo que sabe — incluyendo lo que todavía no sabe que sabe.
+        Convierte la experiencia individual en memoria colectiva.
+        Convierte el contexto en ventaja que ningún competidor puede copiar.
+      </div>
+    </div>
+  </div>
+
+  <p>
+    La diferencia no es cosmética. Cuando una organización entiende que está
+    construyendo un <em>activo de conocimiento</em> — no administrando una base de datos —
+    cambia quién se hace responsable. Cambia cómo se mide el éxito.
+    Cambia fundamentalmente por qué alguien querría participar.
+  </p>
+
+  <p>
+    Un Data Owner que "cuida los datos de su área" tiene un rol técnico.
+    Un Knowledge Owner que "es el guardián del conocimiento de su dominio"
+    tiene un rol estratégico. La diferencia no está en el cargo. Está en el
+    propósito. Y el propósito determina el comportamiento.
+  </p>
+
+  <div class="sep">
+    <span class="sep-num">II · La paradoja que la IA revela</span>
+    <div class="sep-line"></div>
+  </div>
+
+  <p>
+    Durante años, las organizaciones pudieron ignorar el problema del conocimiento
+    no estructurado porque el costo de no tenerlo era invisible.
+    Los documentos desactualizados en SharePoint no molestaban a nadie
+    porque nadie los encontraba. Los permisos mal asignados cuando alguien
+    cambiaba de área no generaban incidentes porque encontrar información
+    requería esfuerzo activo — y ese esfuerzo actuaba como filtro natural.
+  </p>
+
+  <p>
+    Entonces llegó la inteligencia artificial generativa. Y lo cambió todo.
+  </p>
+
+  <div class="scene">
+    <div class="scene-label">Lo que ocurre cuando la IA llega antes que el orden</div>
+    <div class="scene-body">
+      <p>Una empresa implementa Copilot para Microsoft 365. Las primeras semanas son prometedoras: el asistente encuentra documentos, resume correos, conecta información de distintas fuentes.</p>
+      <p>Luego aparecen los problemas. Un empleado que cambió de área recibe, a través del asistente, resúmenes de conversaciones confidenciales del equipo al que ya no pertenece. <strong>No estaba buscando esa información — el sistema la encontró por él.</strong></p>
+      <p>Otro consulta sobre la estrategia de precios. El asistente produce una respuesta coherente combinando tres documentos de diferentes épocas — dos con políticas que ya no están vigentes. La respuesta suena convincente. Es incorrecta.</p>
+      <p>Lo que antes era un problema de gobernanza invisible se convierte, con la IA, en un problema de negocio visible. <strong>La tecnología no creó el problema — lo iluminó.</strong></p>
+    </div>
+  </div>
+
+  <p>
+    La IA no crea estos problemas. Los hereda. Y los amplifica exactamente
+    en la medida en que son serios — porque su trabajo es precisamente
+    encontrar y conectar información, sin juzgar si esa información
+    debería estar ahí, si sigue siendo válida, o si la persona que la
+    recibe tiene autoridad para verla.
+  </p>
+
+  <div class="pull">
+    <p>Un modelo de lenguaje es un espejo. Refleja exactamente el estado del corpus sobre el que opera — con la confianza de quien tiene razón. Si el corpus es rico y ordenado, amplifica riqueza. Si es disperso e inconsistente, amplifica el caos.</p>
+    <span class="pull-attr">Principio de Curaduría · Circo Studio</span>
+  </div>
+
+  <div class="sep">
+    <span class="sep-num">III · Por qué Microsoft 365 es el lugar donde ocurre</span>
+    <div class="sep-line"></div>
+  </div>
+
+  <p>
+    El conocimiento organizacional no vive en un data warehouse.
+    No vive en el ERP. Vive en Microsoft 365 — en el SharePoint donde
+    están los contratos, los procedimientos y las decisiones técnicas.
+    En los Teams donde se coordinan los proyectos.
+    En los correos donde se tomaron las decisiones que nadie registró
+    en ningún sistema formal.
+  </p>
+
+  <p>
+    Y Microsoft 365, por su naturaleza, acumula deuda informacional
+    a una velocidad que ninguna organización puede gestionar espontáneamente.
+    Cada vez que se crea un equipo de Teams, aparece un sitio de SharePoint
+    con un nombre técnico, sin responsable asignado, con permisos heredados
+    y el contenido creciendo sin ningún criterio de ciclo de vida.
+  </p>
+
+  <p class="small">
+    Después de tres años de uso intensivo, una organización mediana tiene
+    típicamente cientos de sitios en ese estado. Algunos con documentos críticos.
+    Muchos con el mismo documento en cinco versiones diferentes.
+    Varios cuyos únicos administradores ya no trabajan en la empresa.
+    Todos indexables por Copilot desde el día en que se activa la licencia.
+  </p>
+
+  <div class="sep">
+    <span class="sep-num">IV · El Índice de Salud Informacional</span>
+    <div class="sep-line"></div>
+  </div>
+
+  <p>
+    Para que el gobierno del conocimiento deje de ser una iniciativa de IT
+    y se convierta en una conversación de negocio, necesita una métrica
+    que dirección pueda leer, comparar y seguir en el tiempo.
+    El Índice de Salud Informacional — ISI — es esa métrica.
+  </p>
+
+  <p>
+    Va de 0 a 100. No mide cuántos documentos tiene la organización —
+    mide qué tan bien está ese corpus en condiciones de producir valor,
+    para las personas que trabajan con él hoy y para los modelos de IA
+    que van a operar sobre él mañana.
+  </p>
+
+  <div class="isi">
+    <div class="isi-header">
+      <span>Índice de Salud Informacional · 6 dimensiones</span>
+      <span>Peso total: 100%</span>
+    </div>
+    <div class="isi-grid">
+      <div class="isi-item">
+        <div class="isi-dim">Ownership</div>
+        <div class="isi-peso">25%</div>
+        <div class="isi-desc">Qué porcentaje del contenido tiene un responsable activo. El más crítico: sin custodia, todo lo demás falla.</div>
+      </div>
+      <div class="isi-item">
+        <div class="isi-dim">Arquitectura</div>
+        <div class="isi-peso">20%</div>
+        <div class="isi-desc">Qué porcentaje del corpus vive en estructura gobernada con naming y criterios de acceso definidos.</div>
+      </div>
+      <div class="isi-item">
+        <div class="isi-dim">Sharing externo</div>
+        <div class="isi-peso">20%</div>
+        <div class="isi-desc">Qué porcentaje de sitios tiene políticas de compartición externa correctamente configuradas.</div>
+      </div>
+      <div class="isi-item">
+        <div class="isi-dim">Calidad</div>
+        <div class="isi-peso">15%</div>
+        <div class="isi-desc">Reducción de duplicados, obsoletos y formatos que los motores semánticos no pueden procesar.</div>
+      </div>
+      <div class="isi-item">
+        <div class="isi-dim">Ciclo de vida</div>
+        <div class="isi-peso">10%</div>
+        <div class="isi-desc">Qué porcentaje tiene política de retención o archivado definida. Determina si el corpus crece o se contamina.</div>
+      </div>
+      <div class="isi-item">
+        <div class="isi-dim">Actividad</div>
+        <div class="isi-peso">10%</div>
+        <div class="isi-desc">Qué porcentaje fue modificado en los últimos 90 días. Proxy de vigencia y relevancia del corpus.</div>
+      </div>
+    </div>
+  </div>
+
+  <p>
+    Un ISI de 25–35 al inicio de un engagement es esperable en organizaciones
+    sin gobernanza previa. No es una condena — es una línea de base.
+    Cada punto que sube es una mejora real en la capacidad del corpus
+    de alimentar sistemas de IA con respuestas confiables.
+    Cuando llega a 70+, la organización tiene las condiciones para lanzar
+    una POC de IA sobre conocimiento interno con resultados verificables.
+  </p>
+
+  <div class="sep">
+    <span class="sep-num">V · La secuencia que no se puede invertir</span>
+    <div class="sep-line"></div>
+  </div>
+
+  <p>
+    Hay una tentación comprensible de invertir el orden.
+    Implementar la IA primero, y después ordenar el conocimiento sobre el que opera.
+    Los proveedores de tecnología la incentivan porque es más fácil vender
+    una promesa de transformación inmediata que un proceso de maduración gradual.
+  </p>
+
+  <div class="scene">
+    <div class="scene-label">La misma pregunta. Dos organizaciones. Dos realidades.</div>
+    <div class="scene-body">
+      <p>Una empresa consulta al asistente: <strong>"¿Cuál es el procedimiento vigente para habilitación de contratistas en planta?"</strong> El sistema encuentra cuatro documentos con ese nombre, de años distintos. Uno en una carpeta SUPERADO. No sabe cuál es el vigente. Responde con el más reciente por fecha — editado por alguien que ya no está en la empresa.</p>
+      <p>Otra empresa hace la misma pregunta. El sistema encuentra un único documento en la biblioteca de procedimientos vigentes, con dueño asignado, fecha de revisión e historial comentado. Responde con certeza. Cita la fuente. <strong>La diferencia no está en el modelo de IA. Está en el corpus.</strong></p>
+    </div>
+  </div>
+
+  <div class="sep">
+    <span class="sep-num">VI · Por qué esto no es un proyecto de IT</span>
+    <div class="sep-line"></div>
+  </div>
+
+  <p>
+    La razón por la que la mayoría de los proyectos de gobierno de datos fracasan
+    no es técnica. Es de patrocinio. Cuando el proyecto vive en IT,
+    IT puede ejecutar la parte técnica — configurar permisos, establecer
+    políticas de retención, crear bibliotecas con metadata.
+    Pero no puede obligar a los responsables de negocio a nombrar
+    un Knowledge Owner por área, a definir qué documentos son los vigentes
+    en cada dominio, a establecer qué contenido puede ser indexado por la IA.
+  </p>
+
+  <p>
+    Esas decisiones requieren autoridad de negocio. Y solo se toman
+    cuando quien las toma entiende que no está "administrando archivos"
+    sino construyendo el activo que va a determinar qué tan bien
+    puede la organización responder cuando la IA le pregunte
+    qué sabe sobre su propio funcionamiento.
+  </p>
+
+  <p>
+    El rol de Circo Studio en un engagement de curaduría no es técnico.
+    Es hacer visible lo que la organización tiene, cuantificar el costo
+    de no tenerlo en orden, y construir el argumento que mueve
+    la conversación del área de IT a la sala de dirección.
+    Porque ahí es donde se toman las decisiones que importan.
+  </p>
+
+  <div class="definicion">
+    <div class="definicion-label">El argumento en una línea</div>
+    <p>La curaduría informacional sobre Microsoft 365 no es limpieza de SharePoint. Es la preparación del corpus de conocimiento organizacional que determina si la inteligencia artificial va a responder bien o va a responder con confianza equivocada. Y eso es una decisión de negocio, no de tecnología.</p>
+  </div>
+
+  <div class="sep">
+    <span class="sep-num">VII · La primera línea de la IA ya existe en tu organización</span>
+    <div class="sep-line"></div>
+  </div>
+
+  <p>
+    Hay equipos que llevan años trabajando con Teams, OneDrive, SharePoint,
+    Power Apps. Equipos que no son de IT — son de operaciones, de proyectos,
+    de administración, de ingeniería. Equipos que conocen el negocio mejor
+    que nadie y que, en el proceso de trabajar, fueron acumulando el corpus
+    de conocimiento más valioso que tiene la organización.
+  </p>
+
+  <p>
+    Esos equipos son <em>la primera línea de la IA</em>.
+    No porque hayan estudiado machine learning — sino porque son los únicos
+    que saben qué dice realmente ese documento de 2019, por qué existe esa carpeta
+    con nombre críptico, qué proceso cambió y cuál de las tres versiones es la que vale.
+    Ese contexto no está en ningún sistema. Está en ellos.
+  </p>
+
+  <p>
+    Durante años, el volumen de información que generaban no era procesable.
+    Nadie podía leer diez mil documentos para encontrar los veinte que importaban.
+    Eso actuaba como límite natural — el desorden existía, pero sus consecuencias
+    eran manejables porque el acceso también era lento.
+  </p>
+
+  <p>
+    Hoy ese límite desapareció. La IA puede procesar ese volumen en segundos.
+    Lo que cambió no es la tecnología — es que el desorden acumulado
+    durante años ahora tiene consecuencias inmediatas y visibles.
+    Y los únicos que pueden resolverlo son los mismos equipos que lo generaron,
+    porque son los únicos que tienen el contexto para distinguir
+    qué vale de qué no vale.
+  </p>
+
+  <div class="scene">
+    <div class="scene-label">El trabajo que viene — y por qué es diferente al que conocen</div>
+    <div class="scene-body">
+      <p>Estos equipos conocen sus herramientas. Saben crear sitios, compartir archivos, armar flujos en Power Automate. Lo que no hicieron todavía — porque nadie se los pidió y no había razón para hacerlo — es mirar hacia atrás con la pregunta: <strong>¿este contenido que acumulamos tiene valor real, o es ruido que se fue sumando sin criterio?</strong></p>
+      <p>Esa pregunta es nueva. Y responderla requiere aprender algo que va más allá de las herramientas — requiere aprender a pensar en <strong>contexto</strong>. A entender que un documento sin fecha de vigencia, sin dueño y sin relación con los demás no es conocimiento: es dato suelto. Y que la diferencia entre dato suelto y conocimiento organizacional es exactamente lo que determina si la IA va a ser útil o va a ser un problema.</p>
+    </div>
+  </div>
+
+  <p>
+    Reconfigurar estos equipos no significa cambiar su estructura ni reemplazar
+    sus herramientas. Significa agregarles una capacidad que hoy no tienen:
+    la de gobernar hacia atrás — revisar lo que ya existe con criterio de contexto —
+    y la de producir hacia adelante con la noción de que cada documento que crean
+    es un fragmento de la memoria colectiva de la organización.
+  </p>
+
+  <p>
+    Circo Studio trabaja con estas áreas. Entendemos las complejidades de las
+    organizaciones grandes, las decisiones que se toman bajo presión, los procesos
+    que cambian antes de que alguien los documente. No llegamos con un modelo de
+    gobernanza genérico que hay que adaptar — llegamos a aprender junto con los
+    equipos cómo funciona realmente este negocio, y construimos desde ahí
+    el sistema que hace que ese conocimiento sobreviva y se pueda amplificar.
+  </p>
+
+  <div class="pull">
+    <p>La nueva etapa de la ofimática no es más funcionalidades. Es aprender a usar las herramientas que ya existen con el concepto de contexto como criterio central. Ese aprendizaje no lo hace IT. Lo hacen los equipos que conocen el negocio.</p>
+    <span class="pull-attr">Circo Studio · Práctica M365 Curaduría</span>
+  </div>
+
+</article>
+
+<div class="cierre">
+  <div class="cierre-inner">
+    <h2>Estamos en el comienzo<br>de una etapa nueva.<br><em>La recorremos juntos.</em></h2>
+    <p>
+      Los equipos que hoy trabajan con estas herramientas no necesitan
+      convertirse en expertos en gobernanza de datos.
+      Necesitan entender por qué el contexto importa — y tener al lado
+      a alguien que los ayude a construirlo.
+    </p>
+    <p>
+      <strong>Eso es lo que hacemos. No vendemos tecnología.
+      Acompañamos a las organizaciones en el paso que convierte
+      el conocimiento que ya tienen en el activo que la IA puede amplificar.</strong>
+    </p>
+    <a href="CS_Curaduria_Como.html" class="cierre-link">Ver cómo se ejecuta un engagement →</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo"><strong>Circo Studio</strong> · AI Governance</div>
+  <div class="footer-links">
+    <a href="CS_Curaduria_Index.html">← Índice</a>
+    <a href="https://circostudio.io" target="_blank">circostudio.io</a>
+    <a href="https://circostudio.io/laboratorio.html" target="_blank">Laboratorio</a>
+  </div>
+</footer>
+
+</body>
+</html>
