@@ -138,6 +138,11 @@ Los scripts son un punto de inicio. Cada tenant tiene su propia realidad — nam
 
 ---
 
+## Laboratorio
+
+Si este kit te resultó útil, en [Circo Studio Laboratorio](https://circostudio.io/laboratorio.html) publicamos ensayos sobre tecnología, gobernanza informacional e inteligencia artificial en organizaciones. El mismo marco conceptual que da origen a este kit, desarrollado en forma de argumento.
+
+---
 ## Contribución y licencia
 
 El kit se publica bajo licencia **MIT**. Se puede usar, modificar y distribuir libremente, incluyendo para uso corporativo. Ver [LICENSE](./LICENSE).
