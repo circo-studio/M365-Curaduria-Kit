@@ -118,6 +118,7 @@ function Read-ClientConfig {
 function Write-Log {
     param(
         [Parameter(Mandatory)]
+        [AllowEmptyString()]
         [string]$Message,
 
         [ValidateSet("INFO","OK","WARN","ERROR","HEADER")]
@@ -256,7 +257,18 @@ function Get-SitiosFiltrados {
 
     $pendientes = [System.Collections.Generic.List[object]]::new()
 
+
     foreach ($fila in $inventario) {
+
+        # Prioridad absoluta: si Relevar_Documentos = SI,
+        # se incluye sin aplicar ningún otro filtro.
+        if ($fila.Relevar_Documentos -eq "SI") {
+            $gb = [double]($fila.Storage_GB -replace ',', '.')
+            $fila | Add-Member -NotePropertyName "_StorageNum" -NotePropertyValue $gb -Force
+            $pendientes.Add($fila)
+            continue
+        }
+
 
         # Solo sitios Legacy (Teams) -- filtrar por template de SharePoint
         # El template es universal y no depende del naming convention del cliente
@@ -352,8 +364,8 @@ function Invoke-RelevamientoSitio {
     )
 
     # Construir nombre limpio para el archivo CSV
-    $nombreLimpio = $SiteName -replace "[^a-zA-Z0-9_-]", "_" -replace "__+", "_"
-    $nombreLimpio = $nombreLimpio.Substring(0, [Math]::Min($nombreLimpio.Length, 50))
+    $nombreLimpio = $SiteName -replace "\s*-\s*", "-" -replace "[^a-zA-Z0-9_-]", "_" -replace "_{2,}", "_"
+    $nombreLimpio = $nombreLimpio.Trim('_')
 
     $ts       = if ($Timestamp) { $Timestamp } else { Get-Date -Format "yyyyMMdd_HHmmss" }
     $prefijo  = if ($Config.NombreCliente) { ($Config.NombreCliente -replace "[^a-zA-Z0-9]","_") + "_" } else { "" }
